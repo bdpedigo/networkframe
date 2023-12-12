@@ -38,5 +38,5 @@ mkdocs-material = "^9.5.2"
 twine = "^4.0.2"
 
 [build-system]
-requires = ["poetry>=1.7.1"]
+requires = ["poetry"]
 build-backend = "poetry.masonry.api"
