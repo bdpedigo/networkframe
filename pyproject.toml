@@ -1,0 +1,23 @@
+[tool]
+[tool.poetry]
+name = "networkframe"
+version = "0.1.0"
+homepage = "https://github.com/bdpedigo/networkframe"
+description = "Lightweight representations of networks using Pandas DataFrames."
+authors = ["Ben Pedigo <ben.pedigo@alleninstitute.org>"]
+readme = "README.md"
+license =  "MIT"
+classifiers=[
+    'Development Status :: 2 - Pre-Alpha',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: MIT License',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3.11',
+]
+packages = [
+    { include = "networkframe" },
+    { include = "tests", format = "sdist" },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.11.0,<4.0"
