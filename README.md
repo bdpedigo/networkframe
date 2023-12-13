@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/bdpedigo/networkframe/actions/workflows/dev.yml/badge.svg)](https://github.com/bdpedigo/networkframe/actions/workflows/dev.yml)
 [![codecov](https://codecov.io/gh/bdpedigo/networkframe/branch/main/graphs/badge.svg)](https://codecov.io/github/bdpedigo/networkframe)
 
-Lightweight representations of networks using Pandas DataFrames
+Lightweight representations of networks using Pandas DataFrames.
 
 - Documentation: <https://bdpedigo.github.io/networkframe>
 - GitHub: <https://github.com/bdpedigo/networkframe>
