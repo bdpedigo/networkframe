@@ -46,7 +46,7 @@ jobs:
       - name: find tox
         run: tox --version
 
-      # - name: run tox
-      #   run: tox -vvv
-      - name: pytest
-        run: pytest -vvv
+      - name: run tox
+        run: tox -vvv
+      # - name: pytest
+      #   run: pytest -vvv
