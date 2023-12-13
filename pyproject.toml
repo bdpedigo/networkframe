@@ -40,3 +40,6 @@ twine = "^4.0.2"
 [build-system]
 requires = ["poetry"]
 build-backend = "poetry.masonry.api"
+
+[tool.ruff]
+ignore-init-module-imports = true
