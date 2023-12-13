@@ -1,4 +1,4 @@
-"""Main module."""
+"""module"""
 
 
 def my_func(a: int, b: int) -> int:
