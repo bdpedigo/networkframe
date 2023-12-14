@@ -59,9 +59,8 @@ extra:
       name: Github
     - icon: material/email
       link: "mailto:ben.pedigo@alleninstitute.org"
-  extra:
-    version:
-      provider: mike
+  version:
+    provider: mike
 
   # to enable disqus, uncomment the following and put your disqus id below
   # disqus: disqus_id
