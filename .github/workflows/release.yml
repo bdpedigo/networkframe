@@ -1,11 +1,13 @@
 # Publish package on main branch if it's tagged with 'v*'
 
-name: release & publish workflow
+name: release
 
 # Controls when the action will run.
 on:
   # Triggers the workflow on push events but only for the master branch
   push:
+    branches:
+      - main
     tags:
       - "v*"
 
@@ -17,7 +19,7 @@ jobs:
   # This workflow contains a single job called "release"
   release:
     name: Create Release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -32,7 +34,7 @@ jobs:
         shell: bash
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Get Changelog Entry
         id: changelog_reader
@@ -42,23 +44,12 @@ jobs:
           version: ${{ steps.tag_name.outputs.current_version }}
           path: ./CHANGELOG.md
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-versions }}
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
-
-      - name: build documentation
-        run: |
-          poetry install -E doc
-          poetry run mkdocs build
-
-      - name: publish documentation
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.PERSONAL_TOKEN }}
-          publish_dir: ./site
 
       - name: Build wheels and source tarball
         run: >-
@@ -84,4 +75,4 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
-          skip_existing: true
+          skip-existing: true
