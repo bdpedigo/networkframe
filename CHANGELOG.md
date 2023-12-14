@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0] - 2023-12-14
+
+### Added
+
+- Attempted use of `mike` for documentation versioning
+
 ## [0.2.1] - 2023-12-13
 
 ### Added
