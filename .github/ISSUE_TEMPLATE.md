@@ -1,4 +1,4 @@
-* networkframe version:
+* `networkframe` version:
 * Python version:
 * Operating System:
 

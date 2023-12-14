@@ -1,6 +1,6 @@
 site_name: networkframe
-site_url: https://bdpedigo.github.io/networkframe
-repo_url: https://github.com/bdpedigo/networkframe
+site_url: https://bdpedigo.github.io/networkframe/
+repo_url: https://github.com/bdpedigo/networkframe/
 repo_name: bdpedigo/networkframe
 #strict: true
 nav:
@@ -51,6 +51,7 @@ plugins:
         python:
           rendering:
             show_source: true
+
 extra:
   social:
     - icon: fontawesome/brands/github
@@ -58,6 +59,10 @@ extra:
       name: Github
     - icon: material/email
       link: "mailto:ben.pedigo@alleninstitute.org"
+  extra:
+    version:
+      provider: mike
+
   # to enable disqus, uncomment the following and put your disqus id below
   # disqus: disqus_id
 # uncomment the following and put your google tracking id below to enable GA
