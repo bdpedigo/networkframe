@@ -1,19 +1,7 @@
-# Changelog
+## Unreleased
 
-## [0.3.0] - 2023-12-14
+## v0.3.0 (2023-12-14)
 
-### Added
+## v0.2.1 (2023-12-13)
 
-- Attempted use of `mike` for documentation versioning
-
-## [0.2.1] - 2023-12-13
-
-### Added
-
-- Generic test function
-
-## [0.1.0] - 2023-12-11
-
-### Added
-
-- Shell package
+## v0.2.0 (2023-12-13)
