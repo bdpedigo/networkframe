@@ -1,0 +1,2 @@
+[tool.commitizen]
+update_changelog_on_bump = true
