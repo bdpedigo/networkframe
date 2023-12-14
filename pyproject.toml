@@ -24,7 +24,6 @@ version = "0.3.0"
 python = ">=3.11.0,<4.0"
 
 [tool.poetry.group.dev.dependencies]
-bump-my-version = "^0.12.0"
 mike = "^2.0.0"
 mkdocs = "^1.5.3"
 mkdocs-autorefs = "^0.5.0"
@@ -39,6 +38,7 @@ pymdown-extensions = "^10.5"
 pytest = "^7.4.3"
 ruff = "^0.1.7"
 twine = "^4.0.2"
+commitizen = "^3.13.0"
 
 [build-system]
 build-backend = "poetry.masonry.api"
