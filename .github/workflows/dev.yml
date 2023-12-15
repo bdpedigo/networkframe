@@ -29,9 +29,6 @@ jobs:
       - name: Get repo
         uses: actions/checkout@v4
 
-      - name: List files
-        run: ls -l .
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -62,7 +59,6 @@ jobs:
     strategy:
       matrix:
         python-versions: [3.11]
-        os: [ubuntu-latest]
 
     steps:
       - name: Get repo
