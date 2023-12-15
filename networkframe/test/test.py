@@ -11,4 +11,5 @@ def my_func(a: int, b: int) -> int:
     Returns:
         int: Sum of the two numbers.
     """
+
     return a + b
