@@ -64,8 +64,8 @@ jobs:
       - name: Get repo
         uses: actions/checkout@v4
 
-      - name: Get gh-pages branch
-        run: git fetch origin gh-pages --depth=1
+      # - name: Get gh-pages branch
+      #   run: git fetch origin gh-pages --depth=1
 
       - name: Setup Python
         uses: actions/setup-python@v5
