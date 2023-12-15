@@ -40,10 +40,10 @@ jobs:
       - name: Install Poetry
         uses: snok/install-poetry@v1
 
-      - name: Verify Poetry 1
-        run: C:\Users\runneradmin\.local\bin\poetry --version
+      # - name: Verify Poetry 1
+      #   run: C:\Users\runneradmin\.local\bin\poetry --version
 
-      - name: Verify Poetry 2
+      - name: Verify Poetry
         run: poetry --version
 
       - name: Install dependencies
