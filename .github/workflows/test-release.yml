@@ -26,7 +26,7 @@ jobs:
         uses: abatilo/actions-poetry@v2
       - name: Build wheels and source tarball
         run: |
-          poetry version "$(poetry version -s).dev${{ github.run_number }}"
+          poetry version "$(poetry version -s).post.dev${{ github.run_number }}"
           poetry build
       - name: Store the distribution packages
         uses: actions/upload-artifact@v3
