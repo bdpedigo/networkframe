@@ -1,10 +1,11 @@
 name: Dev docs
 
 on:
-  push:
-    branches: [main2]
-  pull_request:
-    branches: [main2]
+  # run this workflow when dev checks pass
+  workflow_run:
+    workflows: ["Dev checks"]
+    types:
+      - completed
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
