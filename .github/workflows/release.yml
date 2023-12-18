@@ -19,6 +19,7 @@ jobs:
           python-version: "3.11"
       - uses: snok/install-poetry@v1
       - name: Build wheels and source tarball
+      # poetry version "$(poetry version).dev${BUILD_ID}"
         run: poetry build
       - name: Store the distribution packages
         uses: actions/upload-artifact@v3

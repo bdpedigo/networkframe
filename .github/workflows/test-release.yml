@@ -1,0 +1,64 @@
+# REF: https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/#the-whole-ci-cd-workflow
+name: Publish Python distribution to TestPyPI
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build distribution 📦
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Set GitHub short SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Check GitHub short SHA
+        run: echo ${{ steps.vars.outputs.sha_short }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+      - name: Build wheels and source tarball
+        run: |
+          poetry version "$(poetry version).dev${{ steps.vars.outputs.sha_short }}"
+          poetry build
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-python-package-distributions
+          path: dist/
+
+  publish-to-testpypi:
+    name: Publish Python distribution to TestPyPI
+    needs:
+      - build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/networkframe
+
+    permissions:
+      id-token: write # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v3
+        with:
+          name: test-python-package-distributions
+          path: dist/
+      - name: Publish distribution to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
