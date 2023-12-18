@@ -1,5 +1,5 @@
 # Run tests and linting
-name: Dev (formatting, tests, dev docs)
+name: Dev (formatting, tests, test build docs)
 
 # Controls when the action will run.
 on:
@@ -8,9 +8,10 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  # Allows other workflows to trigger this workflow
+  workflow_call:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -35,8 +36,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-versions }}
 
+      # - name: Install Poetry
+      #   uses: snok/install-poetry@v1
       - name: Install Poetry
-        uses: snok/install-poetry@v1
+        uses: abatilo/actions-poetry@v2
 
       - name: Install dependencies
         run: poetry install --with dev
