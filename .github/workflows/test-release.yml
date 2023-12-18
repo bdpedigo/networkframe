@@ -2,10 +2,13 @@
 name: Publish test Python distribution to TestPyPI
 
 on:
-  push:
-    branches:
-      - main
+  # run this workflow when dev checks pass
+  workflow_run:
+    workflows: ["Dev checks"]
+    types:
+      - completed
 
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -24,9 +27,6 @@ jobs:
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: Check GitHub short SHA
         run: echo ${{ steps.vars.outputs.sha_short }}
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
       - name: Install Poetry
         uses: abatilo/actions-poetry@v2
       - name: Build wheels and source tarball
