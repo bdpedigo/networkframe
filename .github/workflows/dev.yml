@@ -1,9 +1,7 @@
-# Run tests and linting
 name: Dev (formatting, tests, test build docs)
 
-# Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
+  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [main]
   pull_request:
@@ -13,21 +11,16 @@ on:
   # Allows other workflows to trigger this workflow
   workflow_call:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "test"
   test:
     name: Run tests and auto checks on code
-    # The type of runner that the job will run on
     strategy:
       matrix:
         python-versions: [3.11, 3.12]
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Get repo
         uses: actions/checkout@v4
 
@@ -36,8 +29,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-versions }}
 
-      # - name: Install Poetry
-      #   uses: snok/install-poetry@v1
       - name: Install Poetry
         uses: abatilo/actions-poetry@v2
 
@@ -47,5 +38,6 @@ jobs:
       - name: Find tox
         run: poetry run tox --version
 
+      # tox handles the logic for what tests etc. to run. See tox.ini for details.
       - name: Run tox (includes tests, format, lint, docs)
         run: poetry run tox -vv
