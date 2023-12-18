@@ -22,7 +22,7 @@ jobs:
     name: Run tests and auto checks on code
     strategy:
       matrix:
-        python-versions: [3.11, 3.12]
+        python-versions: ["3.11", "3.12"]
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
@@ -57,4 +57,4 @@ jobs:
 
       # tox handles the logic for what tests etc. to run. See tox.ini for details.
       - name: Run tox (includes tests, format, lint, docs)
-        run: poetry run tox -vv
+        run: poetry run tox -vv --skip-pkg-install
