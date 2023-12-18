@@ -1,5 +1,5 @@
 # REF: https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/#the-whole-ci-cd-workflow
-name: Publish Python distribution to TestPyPI
+name: Publish test Python distribution to TestPyPI
 
 on:
   push:
