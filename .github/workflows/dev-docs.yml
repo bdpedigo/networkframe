@@ -14,11 +14,13 @@ jobs:
   # This workflow contains a single job called "docs"
   docs:
     name: Build and deploy (dev) docs
-    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        python-versions: ["3.11"]
+        os: [ubuntu-latest]
+        python-version: ["3.11"]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Get repo
@@ -30,10 +32,21 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-versions }}
+          python-version: ${{ matrix.python-version }}
 
       - name: Install Poetry
         uses: abatilo/actions-poetry@v2
+
+      - name: Setup a local virtual environment # for caching purposes
+        run: |
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
+
+      - name: Cache for virtual environment
+        uses: actions/cache@v3
+        with:
+          path: ./.venv
+          key: venv-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
 
       - name: Install dependencies
         run: poetry install --with dev
