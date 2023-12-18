@@ -2565,6 +2565,23 @@ docs = ["furo (>=2023.8.19)", "sphinx (>=7.2.4)", "sphinx-argparse-cli (>=1.11.1
 testing = ["build[virtualenv] (>=0.10)", "covdefaults (>=2.3)", "detect-test-pollution (>=1.1.1)", "devpi-process (>=1)", "diff-cover (>=7.7)", "distlib (>=0.3.7)", "flaky (>=3.7)", "hatch-vcs (>=0.3)", "hatchling (>=1.18)", "psutil (>=5.9.5)", "pytest (>=7.4)", "pytest-cov (>=4.1)", "pytest-mock (>=3.11.1)", "pytest-xdist (>=3.3.1)", "re-assert (>=1.1)", "time-machine (>=2.12)", "wheel (>=0.41.2)"]
 
 [[package]]
+name = "tox-current-env"
+version = "0.0.11"
+description = "Use current environment instead of virtualenv for tox testenvs"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "tox-current-env-0.0.11.tar.gz", hash = "sha256:5b05d7a169e323ca73c8bacd90cfcfe38e2672b705f944f94d1d6c0f56f31c51"},
+    {file = "tox_current_env-0.0.11-py3-none-any.whl", hash = "sha256:b03c6b8ca3c447c8f99b5638663234e9114c987abbe75e30e1b50a3690677d15"},
+]
+
+[package.dependencies]
+tox = ">=3.24"
+
+[package.extras]
+tests = ["packaging", "pytest", "pytest-xdist"]
+
+[[package]]
 name = "traitlets"
 version = "5.14.0"
 description = "Traitlets Python configuration system"
@@ -2755,4 +2772,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11.0,<4.0"
-content-hash = "a1760c73a3c82bd16ecc40f1adf28defb91f2ce535ef5fa6742bd0e926d36f61"
+content-hash = "7cd4fc84254dadbb5fe157729f2c5bf639bb38d71838a155ac9d3c4e9c647425"

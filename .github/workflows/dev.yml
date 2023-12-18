@@ -57,4 +57,4 @@ jobs:
 
       # tox handles the logic for what tests etc. to run. See tox.ini for details.
       - name: Run tox (includes tests, format, lint, docs)
-        run: poetry run tox -vv --skip-pkg-install
+        run: poetry run tox --skip-pkg-install

@@ -40,6 +40,7 @@ pytest = "^7.4.3"
 ruff = "^0.1.7"
 tox = "^4.11.4"
 twine = "^4.0.2"
+tox-current-env = "^0.0.11"
 
 [build-system]
 build-backend = "poetry.masonry.api"
