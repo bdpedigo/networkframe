@@ -15,6 +15,8 @@ Lightweight representations of networks using Pandas DataFrames.
 A `NetworkFrame` object is simply a table representing nodes and a table representing
 edges, and a variety of methods to make querying and manipulating that data easy.
 
+This is a change.
+
 **Pros:**
 
 - Lightweight: `NetworkFrame` objects are just two DataFrames, so they're easy to manipulate and integrate with other tools.
