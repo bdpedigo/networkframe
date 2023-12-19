@@ -24,11 +24,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install bump-my-version
-        run: pip install bump-my-version
-      - name: Bump version
+      - name: Install commitizen
+        run: pip install commitizen
+      - name: Bump version with commitizen
         run: |
-          bump-my-version ${{ github.event.inputs.part }}
+          cz bump --increment ${{ github.event.inputs.part }}
       - name: Commit and push with tags
         run: git push --follow-tags
     #       git add .
