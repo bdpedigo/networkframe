@@ -3,10 +3,6 @@ name: manual
 on:
   workflow_dispatch:
     inputs:
-      name:
-        description: "Name of the person to greet"
-        required: true
-        default: "World"
       part:
         description: "Semver part to bump (major, minor, patch)"
         type: choice
@@ -20,8 +16,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Collect all commits since last tagged release
-        id: commits
-        uses: juliangruber/git-commits-since@v1
+      - name: Configure git for github-actions[bot]
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Install Python
+        uses: actions/setup-python@v5
         with:
-          tag: v0.0.1
+          python-version: "3.11"
+      - name: Install bump-my-version
+        run: pip install bump-my-version
+      - name: Bump version
+        run: |
+          bump-my-version ${{ github.event.inputs.part }}
+      - name: Commit and push with tags
+        run: git push --follow-tags
+    #       git add .
+    #       git commit -m "Bump version"
