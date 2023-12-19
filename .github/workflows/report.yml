@@ -1,4 +1,4 @@
-name: Daily reporting
+name: build status
 on:
   schedule:
     - cron: "8 15 * * *" # 7:08am PST
