@@ -11,7 +11,6 @@ from beartype import beartype
 from scipy.sparse import csr_array
 
 from .groupby import NodeGroupBy
-from .indexer import LocIndexer
 
 AxisType = Union[
     Literal[0], Literal[1], Literal["index"], Literal["columns"], Literal["both"]
@@ -60,7 +59,9 @@ class NetworkFrame:
             edges["source"].unique(), edges["target"].unique()
         )
         if not np.all(np.isin(referenced_node_ids, nodes.index)):
-            raise ValueError("All nodes referenced in edges must be in nodes.")
+            raise ValueError(
+                "All nodes referenced in `edges` must be in `nodes` index."
+            )
 
         # should probably assume things like "source" and "target" columns
         # and that these elements are in the nodes dataframe
@@ -120,6 +121,10 @@ class NetworkFrame:
         out = f"NetworkFrame(nodes={self.nodes.shape}, edges={self.edges.shape}, "
         out += f"induced={self.induced}, directed={self.directed})"
         return out
+
+    def __len__(self) -> int:
+        """Return the number of nodes in the network."""
+        return len(self.nodes)
 
     def reindex_nodes(self, index: pd.Index) -> "NetworkFrame":
         """Reindex the nodes dataframe, also removes edges as necessary."""
@@ -185,9 +190,11 @@ class NetworkFrame:
         else:
             return NetworkFrame(self.nodes, edges, directed=self.directed)
 
-    def query_nodes(self, query: str, inplace=False) -> Optional["NetworkFrame"]:
+    def query_nodes(
+        self, query: str, inplace=False, local_dict=None, global_dict=None
+    ) -> Optional["NetworkFrame"]:
         """Query the nodes dataframe and remove edges that are no longer valid."""
-        nodes = self.nodes.query(query)
+        nodes = self.nodes.query(query, local_dict=local_dict, global_dict=global_dict)
         # get the edges that are connected to the nodes that are left after the query
         edges = self.edges.query("(source in @nodes.index) & (target in @nodes.index)")
         if inplace:
@@ -197,9 +204,11 @@ class NetworkFrame:
         else:
             return NetworkFrame(nodes, edges, directed=self.directed)
 
-    def query_edges(self, query: str, inplace=False) -> Optional["NetworkFrame"]:
+    def query_edges(
+        self, query: str, inplace=False, local_dict=None, global_dict=None
+    ) -> Optional["NetworkFrame"]:
         """Query the edges dataframe."""
-        edges = self.edges.query(query)
+        edges = self.edges.query(query, local_dict=local_dict, global_dict=global_dict)
         if inplace:
             self.edges = edges
             return None
@@ -209,9 +218,9 @@ class NetworkFrame:
     def remove_unused_nodes(self, inplace=False) -> Optional["NetworkFrame"]:
         """Remove nodes that are not connected to any edges."""
         index = self.nodes.index
-        new_index = index.intersection(
-            self.edges.source.append(self.edges.target).unique()
-        )
+        source_index = index.intersection(self.edges.source)
+        target_index = index.intersection(self.edges.target)
+        new_index = source_index.union(target_index)
         nodes = self.nodes.loc[new_index]
         if inplace:
             self.nodes = nodes
@@ -262,23 +271,32 @@ class NetworkFrame:
         adj_df.columns = adj_df.columns.set_names("target")
         return adj_df
 
-    def to_networkx(self):
+    def to_networkx(self, create_using=None):
         """Return a networkx graph of the network."""
         import networkx as nx
 
-        if self.directed:
-            create_using = nx.MultiDiGraph
-        else:
-            create_using = nx.MultiGraph
+        if create_using is None:
+            # default to multigraph
+            if self.directed:
+                create_using = nx.MultiDiGraph
+            else:
+                create_using = nx.MultiGraph
 
         g = nx.from_pandas_edgelist(
             self.edges,
             source="source",
             target="target",
-            edge_attr=True,
+            edge_attr=True if len(self.edges.columns) > 2 else None,
             create_using=create_using,
         )
+
+        # add missing nodes to gf
+        index = self.nodes.index
+        missing_nodes = index.difference(g.nodes)
+        g.add_nodes_from(missing_nodes)
+
         nx.set_node_attributes(g, self.nodes.to_dict(orient="index"))
+
         return g
 
     def to_sparse_adjacency(
@@ -289,12 +307,18 @@ class NetworkFrame:
         # TODO only necessary since there might be duplicate edges
         # might be more efficient to have a attributed checking this, e.g. set whether
         # this is a multigraph or not
+        # TODO doing this reset_index is kinda hacky, but just getting around the case
+        # where source/target are used as both column names and index level names
         if weight_col is not None:
-            effective_edges = edges.groupby(["source", "target"])[weight_col].agg(
-                aggfunc
+            effective_edges = (
+                edges.reset_index(drop=True)
+                .groupby(["source", "target"])[weight_col]
+                .agg(aggfunc)
             )
         else:
-            effective_edges = edges.groupby(["source", "target"]).size()
+            effective_edges = (
+                edges.reset_index(drop=True).groupby(["source", "target"]).size()
+            )
 
         data = effective_edges.values
         source_indices = effective_edges.index.get_level_values("source")
@@ -481,3 +505,59 @@ class NetworkFrame:
             edges,
             directed=d["directed"],
         )
+
+
+class LocIndexer:
+    """A class for indexing a NetworkFrame using .loc."""
+
+    def __init__(self, frame):
+        """Indexer for NetworkFrame."""
+        self._frame = frame
+
+    def __getitem__(self, args):
+        """Return a NetworkFrame with the given labels."""
+        if isinstance(args, tuple):
+            if len(args) != 2:
+                raise ValueError("Must provide at most two indexes.")
+            else:
+                row_index, col_index = args
+        else:
+            raise NotImplementedError("Currently only accepts dual indexing.")
+
+        if isinstance(row_index, int):
+            row_index = [row_index]
+        if isinstance(col_index, int):
+            col_index = [col_index]
+
+        if isinstance(row_index, slice):
+            row_index = self._frame.nodes.index[row_index]
+        if isinstance(col_index, slice):
+            col_index = self._frame.nodes.index[col_index]
+
+        row_index = pd.Index(row_index)
+        col_index = pd.Index(col_index)
+
+        source_nodes = self._frame.nodes.loc[row_index]
+        target_nodes = self._frame.nodes.loc[col_index]
+
+        edges = self._frame.edges.query(
+            "source in @source_nodes.index and target in @target_nodes.index"
+        )
+
+        if row_index.equals(col_index):
+            nodes = source_nodes
+            return NetworkFrame(
+                nodes,
+                edges,
+                directed=self._frame.directed,
+            )
+        else:
+            nodes = pd.concat([source_nodes, target_nodes], copy=False, sort=False)
+            nodes = nodes.loc[~nodes.index.duplicated(keep="first")]
+            return NetworkFrame(
+                nodes,
+                edges,
+                directed=self._frame.directed,
+                sources=row_index,
+                targets=col_index,
+            )
