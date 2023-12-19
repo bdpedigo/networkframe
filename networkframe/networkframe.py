@@ -5,6 +5,7 @@ import copy
 from collections.abc import Iterator
 from typing import Literal, Optional, Union
 
+import networkx as nx
 import numpy as np
 import pandas as pd
 from beartype import beartype
@@ -24,22 +25,7 @@ NetworkFrameReturn = Union["NetworkFrame", None]
 
 
 class NetworkFrame:
-    """Represent a network as a pair of dataframes, one for nodes and one for edges.
-
-    Parameters
-    ----------
-    nodes : pd.DataFrame
-        Table of node attributes, the node IDs are assumed to be the index
-    edges : pd.DataFrame
-        Table of edges, with source and target columns which correspond with the node
-        Ids in the nodes dataframe.
-    directed : bool, optional
-        Whether the network should be treated as directed, by default True
-    sources : pd.Index, optional
-        Specification of source nodes if representing a subgraph, by default None
-    targets : pd.Index, optional
-        Specification of target nodes if representing a subgraph, by default None
-    """
+    """Represent a network as a pair of DataFrames, one for nodes and one for edges."""
 
     @beartype
     def __init__(
@@ -50,6 +36,22 @@ class NetworkFrame:
         sources: Optional[pd.Index] = None,
         targets: Optional[pd.Index] = None,
     ):
+        """
+        Parameters
+        ----------
+        nodes
+            Table of node attributes. The node IDs must be in the index.
+        edges
+            Table of edges, with source and target columns which correspond with the node
+            IDs in`nodes.index`.
+        directed
+            Whether the network should be treated as directed.
+        sources
+            Specification of source nodes if representing a subgraph.
+        targets
+            Specification of target nodes if representing a subgraph.
+        """
+
         # TODO checks ensuring that nodes and edges are valid.
 
         if not nodes.index.is_unique:
@@ -81,12 +83,18 @@ class NetworkFrame:
         self.directed = directed
 
     def copy(self) -> "NetworkFrame":
-        """Return a copy of the NetworkFrame."""
+        """Return a copy of the NetworkFrame.
+
+        Returns
+        -------
+        NetworkFrame
+            A copy of the NetworkFrame.
+        """
         return copy.deepcopy(self)
 
     @property
-    def sources(self):
-        """Return the source node IDs of the network."""
+    def sources(self) -> pd.Index:
+        """Source node IDs of the network."""
         if self.induced:
             return self.nodes.index
         else:
@@ -96,7 +104,7 @@ class NetworkFrame:
             # return self.nodes.index.intersection(all_sources, sort=False)
 
     @property
-    def targets(self):
+    def targets(self) -> pd.Index:
         """Return the target node IDs of the network."""
         if self.induced:
             return self.nodes.index
@@ -107,12 +115,12 @@ class NetworkFrame:
             # return self.nodes.index.intersection(all_targets, sort=False)
 
     @property
-    def source_nodes(self):
+    def source_nodes(self) -> pd.DataFrame:
         """Return the source nodes of the network and their metadata."""
         return self.nodes.loc[self.sources]
 
     @property
-    def target_nodes(self):
+    def target_nodes(self) -> pd.DataFrame:
         """Return the target nodes of the network and their metadata."""
         return self.nodes.loc[self.targets]
 
@@ -271,9 +279,24 @@ class NetworkFrame:
         adj_df.columns = adj_df.columns.set_names("target")
         return adj_df
 
-    def to_networkx(self, create_using=None):
-        """Return a networkx graph of the network."""
-        import networkx as nx
+    def to_networkx(
+        self,
+        create_using: Union[
+            nx.Graph, nx.DiGraph, nx.MultiDiGraph, nx.MultiGraph
+        ] = None,
+    ):
+        """Return a networkx graph of the network.
+
+        Parameters
+        ----------
+        create_using
+            A NetworkX graph class to use to create the graph.
+
+        Returns
+        -------
+        nx.Graph
+            A NetworkX representation of the network.
+        """
 
         if create_using is None:
             # default to multigraph
@@ -441,7 +464,7 @@ class NetworkFrame:
 
     @property
     def loc(self) -> "LocIndexer":
-        """Return a LocIndexer for the frame."""
+        """A LocIndexer for the frame."""
         return LocIndexer(self)
 
     def __eq__(self, other: object) -> bool:
