@@ -1,4 +1,4 @@
-# networkframe
+# `networkframe`
 
 [![pypi](https://img.shields.io/pypi/v/networkframe.svg)](https://pypi.org/project/networkframe/)
 [![python](https://img.shields.io/pypi/pyversions/networkframe.svg)](https://pypi.org/project/networkframe/)
@@ -15,6 +15,8 @@ Lightweight representations of networks using Pandas DataFrames.
 `networkframe` uses Pandas DataFrames to represent networks in a lightweight way.
 A `NetworkFrame` object is simply a table representing nodes and a table representing
 edges, and a variety of methods to make querying and manipulating that data easy.
+
+## Is `networkframe` right for you?
 
 **Pros:**
 
