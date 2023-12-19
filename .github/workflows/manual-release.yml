@@ -7,12 +7,21 @@ on:
         description: "Name of the person to greet"
         required: true
         default: "World"
+      part:
+        description: "Semver part to bump (major, minor, patch)"
+        type: choice
+        required: true
+        default: "patch"
+        options: ["major", "minor", "patch"]
 
 jobs:
   try-me:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Run a one-line script
-        run: echo Hello, world my name is ${{ github.event.inputs.name }}
+        uses: actions/checkout@v4
+      - name: Collect all commits since last tagged release
+        id: commits
+        uses: juliangruber/git-commits-since@v1
+        with:
+          tag: v0.0.1
