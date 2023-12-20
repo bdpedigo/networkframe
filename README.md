@@ -2,7 +2,7 @@
 
 [![pypi](https://img.shields.io/pypi/v/networkframe.svg)](https://pypi.org/project/networkframe/)
 [![python](https://img.shields.io/pypi/pyversions/networkframe.svg)](https://pypi.org/project/networkframe/)
-[![Build status](https://github.com/bdpedigo/networkframe/actions/workflows/report.yml/badge.svg)](https://github.com/bdpedigo/networkframe/actions/workflows/report.yml)
+[![Build status](https://github.com/bdpedigo/networkframe/actions/workflows/daily-build-status.yml/badge.svg)](https://github.com/bdpedigo/networkframe/actions/workflows/daily-build-status.yml)
 [![Downloads](https://static.pepy.tech/badge/networkframe)](https://pepy.tech/project/networkframe)
 
 Lightweight representations of networks using Pandas DataFrames.
