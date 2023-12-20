@@ -38,6 +38,11 @@ jobs:
     name: Bump version
     runs-on: ubuntu-latest
     needs: test
+    outputs:
+      VERSION: ${{ steps.get-version.outputs.VERSION }}
+      SHORT_VERSION: ${{ steps.get-version.outputs.SHORT_VERSION }}
+      MAJOR_VERSION: ${{ steps.get-version.outputs.MAJOR_VERSION }}
+      MINOR_VERSION: ${{ steps.get-version.outputs.MINOR_VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -82,7 +87,7 @@ jobs:
 
     steps:
       - name: Show version
-        run: echo ${{ needs.bump.outputs.VERSION}}
+        run: echo ${{ needs.bump.outputs.VERSION }}
       - uses: actions/checkout@v4
         with:
           # want this to be the version that was just bumped
