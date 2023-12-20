@@ -16,6 +16,8 @@ Lightweight representations of networks using Pandas DataFrames.
 A `NetworkFrame` object is simply a table representing nodes and a table representing
 edges, and a variety of methods to make querying and manipulating that data easy.
 
+**Warning**: `networkframe` is still in early development, so there may be bugs and missing features. Please report any issues you find!
+
 ## Examples
 
 Creating a `NetworkFrame` from scratch:
@@ -127,7 +129,7 @@ print(nf.edges)
 
 **Cons:**
 
-- No guarantees: since `networkframe` gives you access to the underlying `DataFrames`, it doesn't do much validation of the data.
+- No guarantees: since `networkframe` gives you access to the underlying `DataFrames`, it doesn't do much validation of the data. This is by design, to keep it lightweight and flexible, but it means you can also mess up a `NetworkFrame` if you aren't careful (for instance, you could delete the index used to map edges to nodes).
 - Not optimized for graph computations: since `networkframe` is storing data as simple node and edge tables, it's not optimized for doing actual computations on those graphs (e.g. like searching for shortest paths). A typical workflow would be to use `networkframe` to load and manipulate your data, then convert to a more graph-oriented format like `scipy` sparse matrices or `NetworkX` for computations.
 
 **Room for improvement:**
