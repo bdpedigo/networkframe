@@ -765,6 +765,42 @@ class NetworkFrame:
         -------
         :
             A `NodeGroupBy` object representing the specified groups.
+
+        Examples
+        --------
+        >>> from networkframe import NetworkFrame
+        >>> import pandas as pd
+        >>> nodes = pd.DataFrame(
+        ...     {
+        ...         "name": ["A", "B", "C", "D", "E"],
+        ...         "color": ["red", "blue", "blue", "red", "blue"],
+        ...     },
+        ...     index=[0, 1, 2, 3, 4],
+        ... )
+        >>> edges = pd.DataFrame(
+        ...     {
+        ...         "source": [0, 1, 2, 3, 4],
+        ...         "target": [1, 2, 3, 4, 0],
+        ...         "weight": [1, 2, 3, 4, 5],
+        ...     }
+        ... )
+        >>> nf = NetworkFrame(nodes, edges)
+        >>> for color, subgraph in nf.groupby_nodes("color", axis="both"):
+        ...     print(color)
+        ...     print(subgraph.edges)
+        ('blue', 'blue')
+            source  target  weight
+        1       1       2       2
+        3       2       1       4
+        ('blue', 'red')
+            source  target  weight
+        2       2       3       3
+        ('red', 'blue')
+            source  target  weight
+        0       0       1       1
+        ('red', 'red')
+            source  target  weight
+        4       3       0       5
         """
         if axis == 0 or axis == "source":
             source_nodes_groupby = self.source_nodes.groupby(by=by, **kwargs)

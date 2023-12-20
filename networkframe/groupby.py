@@ -1,5 +1,5 @@
 class NodeGroupBy:
-    """A class for grouping a NetworkFrame by a set of labels."""
+    """A class for grouping a `NetworkFrame` by a set of labels."""
 
     def __init__(self, frame, source_groupby, target_groupby):
         """Groupby on nodes.
