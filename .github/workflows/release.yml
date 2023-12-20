@@ -73,6 +73,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # want this to be the version that was just bumped
+          ref: main
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -158,6 +161,8 @@ jobs:
     steps:
       - name: Get repo
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Get gh-pages branch
         run: git fetch origin gh-pages --depth=1
