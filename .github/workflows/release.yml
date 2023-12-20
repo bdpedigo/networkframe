@@ -73,7 +73,7 @@ jobs:
           python-version: "3.11"
       - uses: abatilo/actions-poetry@v2
       - name: Check version
-        run: echo "${poetry verision -s}"
+        run: poetry verision -s
       - name: Build wheels and source tarball
         run: poetry build
       - name: Store the distribution packages
