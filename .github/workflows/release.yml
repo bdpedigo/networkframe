@@ -150,13 +150,17 @@ jobs:
           inputs: >-
             ./dist/*.tar.gz
             ./dist/*.whl
+      - name: Find ref
+        run: echo ${{ github.ref }}
+      - name: Find proper version
+        run: echo ${{ needs.bump.outputs.VERSION }}
       - name: Create GitHub Release
         if: ${{ github.event.inputs.dry-run == 'false' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: >-
           gh release create
-          '${{ needs.bump.outputs.VERSION }}'
+          'v${{ needs.bump.outputs.VERSION }}'
           --repo '${{ github.repository }}'
           --notes ""
       - name: Upload artifact signatures to GitHub Release
@@ -168,7 +172,7 @@ jobs:
         # sigstore-produced signatures and certificates.
         run: >-
           gh release upload
-          '${{ needs.bump.outputs.VERSION }}' dist/**
+          'v${{ needs.bump.outputs.VERSION }}' dist/**
           --repo '${{ github.repository }}'
 
   docs:
