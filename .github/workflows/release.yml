@@ -193,3 +193,9 @@ jobs:
         run: |
           poetry run mike deploy --push --update-aliases ${{ env.new_version }} stable
           poetry run mike set-default stable --push
+
+      - name: Test build versioned docs with mike
+        if: ${{ github.event.inputs.dry-run == 'false' }}
+        run: |
+          poetry run mike deploy --update-aliases ${{ env.new_version }} stable
+          poetry run mike set-default stable
