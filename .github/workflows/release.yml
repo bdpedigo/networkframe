@@ -62,9 +62,18 @@ jobs:
         if: ${{ github.event.inputs.dry-run == 'false' }}
         run: git push --follow-tags
       - name: Get version
-        run: echo "new_version=$(poetry version -s)" >> $GITHUB_ENV
-      - name: Show version
-        run: echo ${{ env.new_version }}
+        id: get-version
+        run: |
+          version="$(poetry version -s)"
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
+          major_version="$(cut -d '.' -f 1 <<< $version)"
+          echo "MAJOR_VERSION=$major_version" >> $GITHUB_OUTPUT
+          minor_version="$(cut -d '.' -f 2 <<< $version)"
+          echo "MINOR_VERSION=$minor_version" >> $GITHUB_OUTPUT
+          short_version="$major_version.$minor_version"
+          echo "SHORT_VERSION=$short_version" >> $GITHUB_OUTPUT
+      - name: Show short version
+        run: echo ${{ steps.get-version.outputs.SHORT_VERSION }}
 
   build:
     name: Build distribution
@@ -72,6 +81,8 @@ jobs:
     needs: bump
 
     steps:
+      - name: Show version
+        run: echo ${{ steps.get-version.outputs.VERSION }}
       - uses: actions/checkout@v4
         with:
           # want this to be the version that was just bumped
@@ -163,6 +174,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0 # for building docs with page updated info
 
       - name: Get gh-pages branch
         run: git fetch origin gh-pages --depth=1
