@@ -1595,26 +1595,9 @@ of the network.</p>
   <div class="doc doc-contents ">
   
       <p>Return a NetworkFrame from a dictionary representation.</p>
-
-  </div>
-
-</div>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-
-<h5 id="networkframe.NetworkFrame.groupby_nodes" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">groupby_nodes</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
-
-<a href="#networkframe.NetworkFrame.groupby_nodes" class="headerlink" title="Permanent link">&para;</a></h5>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Group the frame by node data for the source or target (or both).</p>
+<p>The dictionary representation should have keys "nodes", "edges", and "directed".
+The values of "nodes" and "edges" should be dictionaries with the same format as
+the output of <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_dict.html#pandas.DataFrame.to_dict">pandas.DataFrame.to_dict</a> according to <code>orient</code>.</p>
 
 
 
@@ -1627,37 +1610,43 @@ of the network.</p>
     </thead>
     <tbody>
         <tr>
-          <td><code>by</code></td>
+          <td><code>d</code></td>
           <td class="doc-param-details">
             <div class="doc-md-description">
-              <p><em>description</em>, by default None</p>
+              <p>The dictionary representation of the NetworkFrame.</p>
             </div>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
-                    <code>_type_</code>
-                </span>
-                <span class="doc-param-default">
-                  <b>DEFAULT:</b> 
-                    <code>None</code>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></code>
                 </span>
             </p>
           </td>
         </tr>
         <tr>
-          <td><code>axis</code></td>
+          <td><code>orient</code></td>
           <td class="doc-param-details">
             <div class="doc-md-description">
-              <p><em>description</em>, by default 'both'</p>
+              <p>The format of the dictionary according to <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_dict.html#pandas.DataFrame.to_dict">pandas.DataFrame.to_dict</a>.</p>
             </div>
             <p>
-                <span class="doc-param-annotation">
-                  <b>TYPE:</b>
-                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
-                </span>
                 <span class="doc-param-default">
                   <b>DEFAULT:</b> 
-                    <code>&#39;both&#39;</code>
+                    <code>&#39;columns&#39;</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>index_dtype</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The data type of the index of the nodes DataFrame.</p>
+            </div>
+            <p>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>
                 </span>
             </p>
           </td>
@@ -1678,13 +1667,94 @@ of the network.</p>
         <tr>
           <td>
               <span class="doc-returns-annotation">
-                  <code>_type_</code>
+                  <code><a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a></code>
               </span>
           </td>
           <td class="doc-returns-details">
             <div class="doc-md-description">
-              <p><em>description</em></p>
+              <p>A NetworkFrame.</p>
             </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h5 id="networkframe.NetworkFrame.groupby_nodes" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">groupby_nodes</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+<a href="#networkframe.NetworkFrame.groupby_nodes" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Group the frame by node data for the source or target (or both).</p>
+<p>See <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby">pandas.DataFrame.groupby</a> for more information.</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>by</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Column name or list of column names to group by.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#list">list</a>]</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>axis</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Whether to group by the source nodes (<code>source</code> or <code>0</code>), target nodes
+(<code>target</code> or <code>0</code>), or both (<code>both</code>).</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><span title="networkframe.networkframe.EdgeAxisType">EdgeAxisType</span></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>&#39;both&#39;</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>kwargs</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Additional keyword arguments to pass to <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby">pandas.DataFrame.groupby</a>.</p>
+            </div>
+            <p>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>{}</code>
+                </span>
+            </p>
           </td>
         </tr>
     </tbody>
@@ -1695,20 +1765,20 @@ of the network.</p>
   <table>
     <thead>
       <tr>
-        <th><b>RAISES</b></th>
+        <th><b>RETURNS</b></th>
         <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
-            <span class="doc-raises-annotation">
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
-            </span>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-internal" title="networkframe.groupby.NodeGroupBy" href="../nodegroupby/#networkframe.NodeGroupBy">NodeGroupBy</a></code>
+              </span>
           </td>
-          <td class="doc-raises-details">
+          <td class="doc-returns-details">
             <div class="doc-md-description">
-              <p><em>description</em></p>
+              <p>A <code>NodeGroupBy</code> object representing the specified groups.</p>
             </div>
           </td>
         </tr>
@@ -2693,7 +2763,7 @@ target nodes. See <a class="autorefs autorefs-external" href="https://pandas.pyd
           <td><code>orient</code></td>
           <td class="doc-param-details">
             <div class="doc-md-description">
-              <p>The format of the dictionary according to pandas.DataFrame.to_dict.</p>
+              <p>The format of the dictionary according to [pandas.DataFrame.to_dict].</p>
             </div>
             <p>
                 <span class="doc-param-annotation">
@@ -2705,6 +2775,31 @@ target nodes. See <a class="autorefs autorefs-external" href="https://pandas.pyd
                     <code>&#39;dict&#39;</code>
                 </span>
             </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></code>
+              </span>
+          </td>
+          <td class="doc-returns-details">
+            <div class="doc-md-description">
+              <p>A dictionary representation of the NetworkFrame.</p>
+            </div>
           </td>
         </tr>
     </tbody>
@@ -2728,7 +2823,63 @@ target nodes. See <a class="autorefs autorefs-external" href="https://pandas.pyd
 
   <div class="doc doc-contents ">
   
-      <p>Return a JSON representation of the NetworkFrame.</p>
+      <p>Return a JSON (string) representation of the NetworkFrame.</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>orient</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The format of the dictionary according to <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_dict.html#pandas.DataFrame.to_dict">pandas.DataFrame.to_dict</a>.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>&#39;dict&#39;</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+              </span>
+          </td>
+          <td class="doc-returns-details">
+            <div class="doc-md-description">
+              <p>A JSON (string) representation of the NetworkFrame.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
   </div>
 
