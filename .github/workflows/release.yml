@@ -129,7 +129,9 @@ jobs:
 
   github-release:
     name: Release to GitHub
-    needs: publish-to-pypi
+    needs:
+      - publish-to-pypi
+      - bump
     runs-on: ubuntu-latest
 
     permissions:
@@ -154,7 +156,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: >-
           gh release create
-          '${{ github.ref_name }}'
+          '${{ needs.bump.outputs.VERSION }}'
           --repo '${{ github.repository }}'
           --notes ""
       - name: Upload artifact signatures to GitHub Release
@@ -166,12 +168,14 @@ jobs:
         # sigstore-produced signatures and certificates.
         run: >-
           gh release upload
-          '${{ github.ref_name }}' dist/**
+          '${{ needs.bump.outputs.VERSION }}' dist/**
           --repo '${{ github.repository }}'
 
   docs:
     name: Release new docs version
-    needs: publish-to-pypi
+    needs:
+      - publish-to-pypi
+      - bump
     runs-on: ubuntu-latest
 
     steps:
@@ -217,11 +221,11 @@ jobs:
       - name: Build and push versioned docs with mike
         if: ${{ github.event.inputs.dry-run == 'false' }}
         run: |
-          poetry run mike deploy --push --update-aliases ${{ env.new_version }} stable
+          poetry run mike deploy --push --update-aliases ${{ needs.bump.outputs.SHORT_VERSION }} stable
           poetry run mike set-default stable --push
 
       - name: Test build versioned docs with mike
         if: ${{ github.event.inputs.dry-run == 'true' }}
         run: |
-          poetry run mike deploy --update-aliases ${{ env.new_version }} stable
+          poetry run mike deploy --update-aliases ${{ needs.bump.outputs.SHORT_VERSION }} stable
           poetry run mike set-default stable
