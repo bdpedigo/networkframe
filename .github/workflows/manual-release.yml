@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Get tags
+        run: git fetch --tags origin
       - name: Configure git for github-actions[bot]
         run: |
           git config --global user.name "github-actions[bot]"
