@@ -618,6 +618,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#networkframe.NetworkFrame.to_sparse_adjacency--notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notes
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -974,6 +983,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#networkframe.NetworkFrame.to_sparse_adjacency--notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notes
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1055,86 +1073,95 @@
 
 
 
-  <p><strong>Parameters:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td><code>nodes</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="pandas" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas">pd</a>.<a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a></code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>Table of node attributes. The node IDs must be in the index.</p>
             </div>
-          </td>
-          <td>
-              <em>required</em>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a></code>
+                </span>
+            </p>
           </td>
         </tr>
         <tr>
           <td><code>edges</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="pandas" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas">pd</a>.<a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a></code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>Table of edges, with source and target columns which correspond with the node
 IDs in<code>nodes.index</code>.</p>
             </div>
-          </td>
-          <td>
-              <em>required</em>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a></code>
+                </span>
+            </p>
           </td>
         </tr>
         <tr>
           <td><code>directed</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>Whether the network should be treated as directed.</p>
             </div>
-          </td>
-          <td>
-                <code>True</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>True</code>
+                </span>
+            </p>
           </td>
         </tr>
         <tr>
           <td><code>sources</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" title="pandas" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas">pd</a>.<a class="autorefs autorefs-external" title="pandas.Index" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index">Index</a>]</code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>Specification of source nodes if representing a subgraph.</p>
             </div>
-          </td>
-          <td>
-                <code>None</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" title="pandas.Index" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index">Index</a>]</code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>None</code>
+                </span>
+            </p>
           </td>
         </tr>
         <tr>
           <td><code>targets</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" title="pandas" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas">pd</a>.<a class="autorefs autorefs-external" title="pandas.Index" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index">Index</a>]</code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>Specification of target nodes if representing a subgraph.</p>
             </div>
-          </td>
-          <td>
-                <code>None</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" title="pandas.Index" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index">Index</a>]</code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>None</code>
+                </span>
+            </p>
           </td>
         </tr>
     </tbody>
@@ -1249,20 +1276,21 @@ This may change in a future release.</p>
 
 
 
-  <p><strong>Returns:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>
+              </span>
           </td>
-          <td>
+          <td class="doc-returns-details">
             <div class="doc-md-description">
               <p>The number of nodes in the network.</p>
             </div>
@@ -1316,20 +1344,21 @@ This may change in a future release.</p>
 
 
 
-  <p><strong>Returns:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+              </span>
           </td>
-          <td>
+          <td class="doc-returns-details">
             <div class="doc-md-description">
               <p>A string representation of the NetworkFrame.</p>
             </div>
@@ -1356,7 +1385,101 @@ This may change in a future release.</p>
 
   <div class="doc doc-contents ">
   
-      <p>Apply node features to the edges dataframe.</p>
+      <p>Apply features from <code>.nodes</code> to <code>.edges</code>.</p>
+<p>This will create new columns in <code>.edges</code> with the node features of the source
+node as <code>"source_{column}"</code> and the node features of the target node as
+<code>"target_{column}"</code>. This can be useful for performing operations on edges based
+on the nodes they connect.</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>columns</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The columns in <code>.nodes</code> to apply to the edges.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><span title="networkframe.networkframe.ColumnsType">ColumnsType</span></code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>axis</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Whether to apply the features to the source nodes (<code>source</code>), target nodes
+(<code>target</code>), or both (<code>both</code>).</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><span title="networkframe.networkframe.EdgeAxisType">EdgeAxisType</span></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>&#39;both&#39;</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>inplace</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Whether to modify the <code>NetworkFrame</code> rather than returning a new one.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>False</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
+              </span>
+          </td>
+          <td class="doc-returns-details">
+            <div class="doc-md-description">
+              <p>A new NetworkFrame with the node features applied to the edges. If
+<code>inplace=True</code>, returns <code>None</code>.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
   </div>
 
@@ -1376,7 +1499,33 @@ This may change in a future release.</p>
 
   <div class="doc doc-contents ">
   
-      <p>Return the connected components of the network.</p>
+      <p>Iterate over the <a href="https://en.wikipedia.org/wiki/Component_(graph_theory)">connected components</a>
+of the network.</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>YIELDS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+              <span class="doc-yields-annotation">
+                  <code><a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a></code>
+              </span>
+          </td>
+          <td class="doc-yields-details">
+            <div class="doc-md-description">
+              <p>A new NetworkFrame for each connected component.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
   </div>
 
@@ -1400,20 +1549,21 @@ This may change in a future release.</p>
 
 
 
-  <p><strong>Returns:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a></code>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a></code>
+              </span>
           </td>
-          <td>
+          <td class="doc-returns-details">
             <div class="doc-md-description">
               <p>A copy of the NetworkFrame.</p>
             </div>
@@ -1468,43 +1618,48 @@ This may change in a future release.</p>
 
 
 
-  <p><strong>Parameters:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td><code>by</code></td>
-          <td>
-                <code>_type_</code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p><em>description</em>, by default None</p>
             </div>
-          </td>
-          <td>
-                <code>None</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code>_type_</code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>None</code>
+                </span>
+            </p>
           </td>
         </tr>
         <tr>
           <td><code>axis</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p><em>description</em>, by default 'both'</p>
             </div>
-          </td>
-          <td>
-                <code>&#39;both&#39;</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>&#39;both&#39;</code>
+                </span>
+            </p>
           </td>
         </tr>
     </tbody>
@@ -1512,20 +1667,21 @@ This may change in a future release.</p>
 
 
 
-  <p><strong>Returns:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
-                <code>_type_</code>
+              <span class="doc-returns-annotation">
+                  <code>_type_</code>
+              </span>
           </td>
-          <td>
+          <td class="doc-returns-details">
             <div class="doc-md-description">
               <p><em>description</em></p>
             </div>
@@ -1536,20 +1692,21 @@ This may change in a future release.</p>
 
 
 
-  <p><strong>Raises:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <th><b>RAISES</b></th>
+        <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
+            <span class="doc-raises-annotation">
                 <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
+            </span>
           </td>
-          <td>
+          <td class="doc-raises-details">
             <div class="doc-md-description">
               <p><em>description</em></p>
             </div>
@@ -1578,6 +1735,31 @@ This may change in a future release.</p>
   
       <p>Return whether the network is fully connected.</p>
 
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+              </span>
+          </td>
+          <td class="doc-returns-details">
+            <div class="doc-md-description">
+              <p>Whether the network is fully connected.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
   </div>
 
 </div>
@@ -1589,14 +1771,89 @@ This may change in a future release.</p>
 
 
 <h5 id="networkframe.NetworkFrame.label_nodes_by_component" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">label_nodes_by_component</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;component&#39;</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">label_nodes_by_component</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;component&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 <a href="#networkframe.NetworkFrame.label_nodes_by_component" class="headerlink" title="Permanent link">&para;</a></h5>
 
 
   <div class="doc doc-contents ">
   
-      <p>Add a column labeling nodes by which connected component they are in.</p>
+      <p>Add a column to <code>.nodes</code> labeling which connected component they are in.</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>name</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The name of the column to add to <code>.nodes</code>.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>&#39;component&#39;</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>inplace</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Whether to modify the <code>NetworkFrame</code> rather than returning a new one.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>False</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
+              </span>
+          </td>
+          <td class="doc-returns-details">
+            <div class="doc-md-description">
+              <p>A new NetworkFrame with the component labels added to <code>.nodes</code>. If
+<code>inplace=True</code>, returns <code>None</code>.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
   </div>
 
@@ -1616,7 +1873,85 @@ This may change in a future release.</p>
 
   <div class="doc doc-contents ">
   
-      <p>Return the largest connected component of the network.</p>
+      <p>Find the largest <a href="https://en.wikipedia.org/wiki/Component_(graph_theory)">connected component</a>
+of the network.</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>inplace</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Whether to modify the <code>NetworkFrame</code> to select only the largest connected
+component, rather than returning a new one.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>False</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>verbose</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Whether to print the number of nodes removed when taking the largest connected
+component.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>False</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
+              </span>
+          </td>
+          <td class="doc-returns-details">
+            <div class="doc-md-description">
+              <p>A new NetworkFrame with only the largest connected component. If
+<code>inplace=True</code>, returns <code>None</code>.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
   </div>
 
@@ -1636,7 +1971,33 @@ This may change in a future release.</p>
 
   <div class="doc doc-contents ">
   
-      <p>Return the number of connected components of the network.</p>
+      <p>Return the number of <a href="https://en.wikipedia.org/wiki/Component_(graph_theory)">connected components</a>
+of the network.</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>
+              </span>
+          </td>
+          <td class="doc-returns-details">
+            <div class="doc-md-description">
+              <p>The number of connected components.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
   </div>
 
@@ -1660,76 +2021,85 @@ This may change in a future release.</p>
 
 
 
-  <p><strong>Parameters:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td><code>expr</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>The query to use on <code>.edges</code>. See <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.query.html#pandas.DataFrame.query">pandas.DataFrame.query</a> for more
 information.</p>
             </div>
-          </td>
-          <td>
-              <em>required</em>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+                </span>
+            </p>
           </td>
         </tr>
         <tr>
           <td><code>inplace</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>Whether to modify the <code>NetworkFrame</code> rather than returning a new one.</p>
             </div>
-          </td>
-          <td>
-                <code>False</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>False</code>
+                </span>
+            </p>
           </td>
         </tr>
         <tr>
           <td><code>local_dict</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>]</code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>A dictionary of local variables. Useful for using the <code>@</code> expressions in
 <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.query.html#pandas.DataFrame.query">pandas.DataFrame.query</a>. It may be useful to pass <code>local_dict=locals()</code> to
 accomplish this.</p>
             </div>
-          </td>
-          <td>
-                <code>None</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>]</code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>None</code>
+                </span>
+            </p>
           </td>
         </tr>
         <tr>
           <td><code>global_dict</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>]</code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>A dictionary of global variables. Useful for using the <code>@</code> expressions in
 <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.query.html#pandas.DataFrame.query">pandas.DataFrame.query</a>. It may be useful to pass <code>global_dict=globals()</code>
 to accomplish this.</p>
             </div>
-          </td>
-          <td>
-                <code>None</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>]</code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>None</code>
+                </span>
+            </p>
           </td>
         </tr>
     </tbody>
@@ -1737,20 +2107,21 @@ to accomplish this.</p>
 
 
 
-  <p><strong>Returns:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
+              </span>
           </td>
-          <td>
+          <td class="doc-returns-details">
             <div class="doc-md-description">
               <p>A new NetworkFrame for the subnetwork. If <code>inplace=True</code>, returns <code>None</code>.</p>
             </div>
@@ -1806,76 +2177,85 @@ to accomplish this.</p>
 
 
 
-  <p><strong>Parameters:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td><code>expr</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>The query to use on <code>.nodes</code>. See <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.query.html#pandas.DataFrame.query">pandas.DataFrame.query</a> for more
 information.</p>
             </div>
-          </td>
-          <td>
-              <em>required</em>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+                </span>
+            </p>
           </td>
         </tr>
         <tr>
           <td><code>inplace</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>Whether to modify the <code>NetworkFrame</code> rather than returning a new one.</p>
             </div>
-          </td>
-          <td>
-                <code>False</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>False</code>
+                </span>
+            </p>
           </td>
         </tr>
         <tr>
           <td><code>local_dict</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>]</code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>A dictionary of local variables. Useful for using the <code>@</code> expressions in
 <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.query.html#pandas.DataFrame.query">pandas.DataFrame.query</a>. It may be useful to pass <code>local_dict=locals()</code> to
 accomplish this.</p>
             </div>
-          </td>
-          <td>
-                <code>None</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>]</code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>None</code>
+                </span>
+            </p>
           </td>
         </tr>
         <tr>
           <td><code>global_dict</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>]</code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>A dictionary of global variables. Useful for using the <code>@</code> expressions in
 <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.query.html#pandas.DataFrame.query">pandas.DataFrame.query</a>. It may be useful to pass <code>global_dict=globals()</code>
 to accomplish this.</p>
             </div>
-          </td>
-          <td>
-                <code>None</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>]</code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>None</code>
+                </span>
+            </p>
           </td>
         </tr>
     </tbody>
@@ -1883,20 +2263,21 @@ to accomplish this.</p>
 
 
 
-  <p><strong>Returns:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
+              </span>
           </td>
-          <td>
+          <td class="doc-returns-details">
             <div class="doc-md-description">
               <p>A new NetworkFrame for the subnetwork. If <code>inplace=True</code>, returns <code>None</code>.</p>
             </div>
@@ -1953,29 +2334,26 @@ to accomplish this.</p>
 
 
 
-  <p><strong>Parameters:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td><code>index</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="pandas" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas">pd</a>.<a class="autorefs autorefs-external" title="pandas.Index" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index">Index</a></code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>The new index to use.</p>
             </div>
-          </td>
-          <td>
-              <em>required</em>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="pandas.Index" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index">Index</a></code>
+                </span>
+            </p>
           </td>
         </tr>
     </tbody>
@@ -1983,20 +2361,21 @@ to accomplish this.</p>
 
 
 
-  <p><strong>Returns:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a></code>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a></code>
+              </span>
           </td>
-          <td>
+          <td class="doc-returns-details">
             <div class="doc-md-description">
               <p>A new NetworkFrame with the reindexed nodes.</p>
             </div>
@@ -2027,30 +2406,27 @@ to accomplish this.</p>
 
 
 
-  <p><strong>Parameters:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td><code>nodes</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<a class="autorefs autorefs-external" title="pandas" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas">pd</a>.<a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a>, <a class="autorefs autorefs-external" title="pandas" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas">pd</a>.<a class="autorefs autorefs-external" title="pandas.Index" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index">Index</a>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#list">list</a>, <span title="numpy">np</span>.<span title="numpy.ndarray">ndarray</span>]</code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>The index of nodes to remove. If a <code>pd.DataFrame</code> is passed, its index is
 used; otherwise the object is interpreted as an index-like.</p>
             </div>
-          </td>
-          <td>
-              <em>required</em>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a>, <span title="networkframe.networkframe.Index">Index</span>]</code>
+                </span>
+            </p>
           </td>
         </tr>
     </tbody>
@@ -2058,20 +2434,21 @@ used; otherwise the object is interpreted as an index-like.</p>
 
 
 
-  <p><strong>Returns:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
+              </span>
           </td>
-          <td>
+          <td class="doc-returns-details">
             <div class="doc-md-description">
               <p>A new NetworkFrame with the nodes removed. If <code>inplace=True</code>, returns <code>None</code>.</p>
             </div>
@@ -2102,29 +2479,30 @@ used; otherwise the object is interpreted as an index-like.</p>
 
 
 
-  <p><strong>Parameters:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td><code>inplace</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>Whether to modify the <code>NetworkFrame</code> rather than returning a new one.</p>
             </div>
-          </td>
-          <td>
-                <code>False</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>False</code>
+                </span>
+            </p>
           </td>
         </tr>
     </tbody>
@@ -2132,20 +2510,21 @@ used; otherwise the object is interpreted as an index-like.</p>
 
 
 
-  <p><strong>Returns:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
+              </span>
           </td>
-          <td>
+          <td class="doc-returns-details">
             <div class="doc-md-description">
               <p>A new NetworkFrame with the unused nodes removed. If <code>inplace=True</code>, returns
 <code>None</code>.</p>
@@ -2198,7 +2577,87 @@ used; otherwise the object is interpreted as an index-like.</p>
 
   <div class="doc doc-contents ">
   
-      <p>Return the adjacency matrix of the network.</p>
+      <p>Return the <a href="https://en.wikipedia.org/wiki/Adjacency_matrix">adjacency matrix</a>
+of the network as a <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame">pandas.DataFrame</a>.</p>
+<p>Source nodes are the rows and target nodes are the columns. The adjacency matrix
+will be returned in the same order as the nodes in <code>.nodes</code>.</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>weight_col</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The column in <code>.edges</code> to use as the weight for the adjacency matrix.
+In the current implementation this must be set; future releases will support
+<code>None</code> to deal with unweighted networks.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>&#39;weight&#39;</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>aggfunc</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The function to use to aggregate multiple edges between the same source and
+target nodes. See <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.pivot_table.html#pandas.DataFrame.pivot_table">pandas.DataFrame.pivot_table</a> for more information.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" title="typing.Callable" href="https://docs.python.org/3/library/typing.html#typing.Callable">Callable</a>]</code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>&#39;sum&#39;</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a></code>
+              </span>
+          </td>
+          <td class="doc-returns-details">
+            <div class="doc-md-description">
+              <p>The adjacency matrix of the network as a [pd.DataFrame][].</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
   </div>
 
@@ -2222,29 +2681,30 @@ used; otherwise the object is interpreted as an index-like.</p>
 
 
 
-  <p><strong>Parameters:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td><code>orient</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
               <p>The format of the dictionary according to pandas.DataFrame.to_dict.</p>
             </div>
-          </td>
-          <td>
-                <code>&#39;dict&#39;</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>&#39;dict&#39;</code>
+                </span>
+            </p>
           </td>
         </tr>
     </tbody>
@@ -2288,33 +2748,37 @@ used; otherwise the object is interpreted as an index-like.</p>
 
   <div class="doc doc-contents ">
   
-      <p>Return a networkx graph of the network.</p>
+      <p>Return a NetworkX graph representation of the network.</p>
+<p>This NetworkX graph also includes all node and edge attributes.</p>
 
 
 
-  <p><strong>Parameters:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td><code>create_using</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<span title="networkx">nx</span>.<a class="autorefs autorefs-external" title="networkx.Graph" href="https://networkx.org/documentation/stable/reference/classes/graph.html#networkx.Graph">Graph</a>, <span title="networkx">nx</span>.<a class="autorefs autorefs-external" title="networkx.DiGraph" href="https://networkx.org/documentation/stable/reference/classes/digraph.html#networkx.DiGraph">DiGraph</a>, <span title="networkx">nx</span>.<a class="autorefs autorefs-external" title="networkx.MultiDiGraph" href="https://networkx.org/documentation/stable/reference/classes/multidigraph.html#networkx.MultiDiGraph">MultiDiGraph</a>, <span title="networkx">nx</span>.<a class="autorefs autorefs-external" title="networkx.MultiGraph" href="https://networkx.org/documentation/stable/reference/classes/multigraph.html#networkx.MultiGraph">MultiGraph</a>]</code>
-          </td>
-          <td>
+          <td class="doc-param-details">
             <div class="doc-md-description">
-              <p>A NetworkX graph class to use to create the graph.</p>
+              <p>The <a href="https://networkx.org/documentation/stable/reference/classes/index.html">NetworkX graph class</a>
+to use to create the graph. If <code>None</code>, defaults to <code>nx.MultiDiGraph</code> if the
+network is directed and <code>nx.MultiGraph</code> if the network is undirected.</p>
             </div>
-          </td>
-          <td>
-                <code>None</code>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<a class="autorefs autorefs-external" title="networkx.Graph" href="https://networkx.org/documentation/stable/reference/classes/graph.html#networkx.Graph">Graph</a>, <a class="autorefs autorefs-external" title="networkx.DiGraph" href="https://networkx.org/documentation/stable/reference/classes/digraph.html#networkx.DiGraph">DiGraph</a>, <a class="autorefs autorefs-external" title="networkx.MultiDiGraph" href="https://networkx.org/documentation/stable/reference/classes/multidigraph.html#networkx.MultiDiGraph">MultiDiGraph</a>, <a class="autorefs autorefs-external" title="networkx.MultiGraph" href="https://networkx.org/documentation/stable/reference/classes/multigraph.html#networkx.MultiGraph">MultiGraph</a>]]</code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>None</code>
+                </span>
+            </p>
           </td>
         </tr>
     </tbody>
@@ -2322,20 +2786,21 @@ used; otherwise the object is interpreted as an index-like.</p>
 
 
 
-  <p><strong>Returns:</strong></p>
   <table>
     <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<span title="networkx">nx</span>.<a class="autorefs autorefs-external" title="networkx.Graph" href="https://networkx.org/documentation/stable/reference/classes/graph.html#networkx.Graph">Graph</a>, <span title="networkx">nx</span>.<a class="autorefs autorefs-external" title="networkx.DiGraph" href="https://networkx.org/documentation/stable/reference/classes/digraph.html#networkx.DiGraph">DiGraph</a>, <span title="networkx">nx</span>.<a class="autorefs autorefs-external" title="networkx.MultiDiGraph" href="https://networkx.org/documentation/stable/reference/classes/multidigraph.html#networkx.MultiDiGraph">MultiDiGraph</a>, <span title="networkx">nx</span>.<a class="autorefs autorefs-external" title="networkx.MultiGraph" href="https://networkx.org/documentation/stable/reference/classes/multigraph.html#networkx.MultiGraph">MultiGraph</a>]</code>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<a class="autorefs autorefs-external" title="networkx.Graph" href="https://networkx.org/documentation/stable/reference/classes/graph.html#networkx.Graph">Graph</a>, <a class="autorefs autorefs-external" title="networkx.DiGraph" href="https://networkx.org/documentation/stable/reference/classes/digraph.html#networkx.DiGraph">DiGraph</a>, <a class="autorefs autorefs-external" title="networkx.MultiDiGraph" href="https://networkx.org/documentation/stable/reference/classes/multidigraph.html#networkx.MultiDiGraph">MultiDiGraph</a>, <a class="autorefs autorefs-external" title="networkx.MultiGraph" href="https://networkx.org/documentation/stable/reference/classes/multigraph.html#networkx.MultiGraph">MultiGraph</a>]</code>
+              </span>
           </td>
-          <td>
+          <td class="doc-returns-details">
             <div class="doc-md-description">
               <p>A NetworkX representation of the network.</p>
             </div>
@@ -2362,7 +2827,102 @@ used; otherwise the object is interpreted as an index-like.</p>
 
   <div class="doc doc-contents ">
   
-      <p>Return the adjacency matrix of the network as a sparse array.</p>
+      <p>Return the <a href="https://en.wikipedia.org/wiki/Adjacency_matrix">adjacency matrix</a>
+of the network as a <a class="autorefs autorefs-external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_array.html#scipy.sparse.csr_array">scipy.sparse.csr_array</a>.</p>
+<p>Source nodes are the rows and target nodes are the columns. The adjacency matrix
+will be returned in the same order as the nodes in <code>.nodes</code>.</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>weight_col</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The column in <code>.edges</code> to use as the weight for the adjacency matrix. If
+<code>None</code>, then the number of edges between the source and target nodes will be
+used.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>None</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>aggfunc</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The function to use to aggregate multiple edges between the same source and
+target nodes. See <a class="autorefs autorefs-external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.pivot_table.html#pandas.DataFrame.pivot_table">pandas.DataFrame.pivot_table</a> for more information.</p>
+            </div>
+            <p>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>&#39;sum&#39;</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>verify_integrity</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Whether to verify that all source and target nodes are in the nodes index.
+Adds some overhead but prevents a difficult to decipher error later on if
+the node table is missing entries.</p>
+            </div>
+            <p>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>True</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-external" title="scipy.sparse.csr_array" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_array.html#scipy.sparse.csr_array">csr_array</a></code>
+              </span>
+          </td>
+          <td class="doc-returns-details">
+            <div class="doc-md-description">
+              <p>The adjacency matrix of the network as a <a class="autorefs autorefs-external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_array.html#scipy.sparse.csr_array">scipy.sparse.csr_array</a>.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <h6 id="networkframe.NetworkFrame.to_sparse_adjacency--notes">Notes<a class="headerlink" href="#networkframe.NetworkFrame.to_sparse_adjacency--notes" title="Permanent link">&para;</a></h6>
+<p>This method currently only supports <a class="autorefs autorefs-external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_array.html#scipy.sparse.csr_array">scipy.sparse.csr_array</a> output, but in
+the future may support other sparse array formats.</p>
 
   </div>
 
