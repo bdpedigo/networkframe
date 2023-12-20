@@ -11,6 +11,11 @@ on:
         required: true
         default: "patch"
         options: ["major", "minor", "patch"]
+      dry-run:
+        description: "Dry run"
+        type: boolean
+        required: true
+        default: true
 
 jobs:
   test:
@@ -40,6 +45,7 @@ jobs:
         run: |
           cz bump --increment ${{ github.event.inputs.part }}
       - name: Commit and push with tags
+        if: ${{ github.event.inputs.dry-run == 'false' }}
         run: git push --follow-tags
 
   build:
@@ -58,6 +64,7 @@ jobs:
         run: poetry build
       - name: Store the distribution packages
         uses: actions/upload-artifact@v3
+        if: ${{ github.event.inputs.dry-run == 'false' }}
         with:
           name: python-package-distributions
           path: dist/
@@ -79,6 +86,7 @@ jobs:
           name: python-package-distributions
           path: dist/
       - name: Publish distribution to PyPI
+        if: ${{ github.event.inputs.dry-run == 'false' }}
         uses: pypa/gh-action-pypi-publish@release/v1
 
   github-release:
@@ -111,6 +119,7 @@ jobs:
           --repo '${{ github.repository }}'
           --notes ""
       - name: Upload artifact signatures to GitHub Release
+        if: ${{ github.event.inputs.dry-run == 'false' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         # Upload to GitHub Release using the `gh` CLI.
@@ -170,6 +179,7 @@ jobs:
         run: echo "new_version=$(poetry version -s)" >> $GITHUB_ENV
 
       - name: Build and push versioned docs with mike
+        if: ${{ github.event.inputs.dry-run == 'false' }}
         run: |
           poetry run mike deploy --push --update-aliases ${{ env.new_version }} stable
           poetry run mike set-default stable --push
