@@ -566,6 +566,7 @@
 <p><code>networkframe</code> uses Pandas DataFrames to represent networks in a lightweight way.
 A <code>NetworkFrame</code> object is simply a table representing nodes and a table representing
 edges, and a variety of methods to make querying and manipulating that data easy.</p>
+<p><strong>Warning</strong>: <code>networkframe</code> is still in early development, so there may be bugs and missing features. Please report any issues you find!</p>
 <h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
 <p>Creating a <code>NetworkFrame</code> from scratch:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -650,7 +651,7 @@ edges, and a variety of methods to make querying and manipulating that data easy
 </ul>
 <p><strong>Cons:</strong></p>
 <ul>
-<li>No guarantees: since <code>networkframe</code> gives you access to the underlying <code>DataFrames</code>, it doesn't do much validation of the data.</li>
+<li>No guarantees: since <code>networkframe</code> gives you access to the underlying <code>DataFrames</code>, it doesn't do much validation of the data. This is by design, to keep it lightweight and flexible, but it means you can also mess up a <code>NetworkFrame</code> if you aren't careful (for instance, you could delete the index used to map edges to nodes).</li>
 <li>Not optimized for graph computations: since <code>networkframe</code> is storing data as simple node and edge tables, it's not optimized for doing actual computations on those graphs (e.g. like searching for shortest paths). A typical workflow would be to use <code>networkframe</code> to load and manipulate your data, then convert to a more graph-oriented format like <code>scipy</code> sparse matrices or <code>NetworkX</code> for computations.</li>
 </ul>
 <p><strong>Room for improvement:</strong></p>
