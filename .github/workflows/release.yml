@@ -59,6 +59,10 @@ jobs:
       - name: Commit and push with tags
         if: ${{ github.event.inputs.dry-run == 'false' }}
         run: git push --follow-tags
+      - name: Get version
+        run: echo "new_version=$(poetry version -s)" >> $GITHUB_ENV
+      - name: Show version
+        run: echo ${{ env.new_version }}
 
   build:
     name: Build distribution
@@ -73,7 +77,7 @@ jobs:
           python-version: "3.11"
       - uses: abatilo/actions-poetry@v2
       - name: Check version
-        run: poetry verision -s
+        run: poetry version -s
       - name: Build wheels and source tarball
         run: poetry build
       - name: Store the distribution packages
