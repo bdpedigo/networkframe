@@ -16,6 +16,105 @@ Lightweight representations of networks using Pandas DataFrames.
 A `NetworkFrame` object is simply a table representing nodes and a table representing
 edges, and a variety of methods to make querying and manipulating that data easy.
 
+## Examples
+
+Creating a `NetworkFrame` from scratch:
+
+```python
+import pandas as pd
+
+from networkframe import NetworkFrame
+
+nodes = pd.DataFrame(
+    {
+        "name": ["A", "B", "C", "D", "E"],
+        "color": ["red", "blue", "blue", "red", "blue"],
+    },
+    index=[0, 1, 2, 3, 4],
+)
+edges = pd.DataFrame(
+    {
+        "source": [0, 1, 2, 2, 3],
+        "target": [1, 2, 3, 1, 0],
+        "weight": [1, 2, 3, 4, 5],
+    }
+)
+
+nf = NetworkFrame(nodes, edges)
+print(nf)
+```
+
+```text.python.console
+NetworkFrame(nodes=(5, 2), edges=(5, 3))
+```
+
+Selecting a subgraph by node color
+
+```python
+red_nodes = nf.query_nodes("color == 'red'")
+print(red_nodes.nodes)
+```
+
+```text.python.console
+  name color
+0    A   red
+3    D   red
+```
+
+Selecting a subgraph by edge weight
+
+```python
+strong_nf = nf.query_edges("weight > 2")
+print(strong_nf.edges)
+```
+
+```text.python.console
+   source  target  weight
+2       2       3       3
+3       2       1       4
+4       3       0       5
+```
+
+Iterating over subgraphs by node color
+
+```python
+for color, subgraph in nf.groupby_nodes("color", axis="both"):
+    print(color)
+    print(subgraph.edges)
+```
+
+```text.python.console
+('blue', 'blue')
+   source  target  weight
+1       1       2       2
+3       2       1       4
+('blue', 'red')
+   source  target  weight
+2       2       3       3
+('red', 'blue')
+   source  target  weight
+0       0       1       1
+('red', 'red')
+   source  target  weight
+4       3       0       5
+```
+
+Applying node information to edges
+
+```python
+nf.apply_node_features("color", inplace=True)
+print(nf.edges)
+```
+
+```text.python.console
+   source  target  weight source_color target_color
+0       0       1       1          red         blue
+1       1       2       2         blue         blue
+2       2       3       3         blue          red
+3       2       1       4         blue         blue
+4       3       0       5          red          red
+```
+
 ## Is `networkframe` right for you?
 
 **Pros:**

@@ -71,10 +71,11 @@ plugins:
             - https://docs.python.org/3/objects.inv
             - https://pandas.pydata.org/pandas-docs/stable/objects.inv
             - https://networkx.org/documentation/stable/objects.inv
+            - https://docs.scipy.org/doc/scipy/objects.inv
           options:
             show_source: false
             docstring_style: numpy
-            docstring_section_style: table # list, table, spacy
+            docstring_section_style: spacy # list, table, spacy
             docstring_options:
               ignore_init_summary: false
             merge_init_into_class: true
@@ -89,7 +90,7 @@ plugins:
             summary: true
             show_if_no_docstring: false
             show_docstring_attributes: false
-            annotations_path: source
+            annotations_path: brief
             show_signature: true
             separate_signature: false
             show_signature_annotations: false

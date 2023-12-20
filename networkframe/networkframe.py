@@ -3,7 +3,7 @@
 
 import copy
 from collections.abc import Iterator
-from typing import Literal, Optional, Union
+from typing import Callable, Literal, Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -22,6 +22,8 @@ EdgeAxisType = Union[Literal["source"], Literal["target"], Literal["both"]]
 ColumnsType = Union[list, str]
 
 NetworkFrameReturn = Union["NetworkFrame", None]
+
+Index = Union[pd.Index, pd.MultiIndex, np.ndarray, list]
 
 
 class NetworkFrame:
@@ -133,7 +135,6 @@ class NetworkFrame:
             A string representation of the NetworkFrame.
         """
         out = f"NetworkFrame(nodes={self.nodes.shape}, edges={self.edges.shape})"
-        # out += f"induced={self.induced}, directed={self.directed})"
         return out
 
     def __len__(self) -> int:
@@ -166,7 +167,7 @@ class NetworkFrame:
         return NetworkFrame(nodes, edges, directed=self.directed)
 
     def remove_nodes(
-        self, nodes: Union[pd.DataFrame, pd.Index, list, np.ndarray], inplace=False
+        self, nodes: Union[pd.DataFrame, Index], inplace=False
     ) -> Optional["NetworkFrame"]:
         """Remove nodes from the network and remove edges that are no longer valid.
 
@@ -414,7 +415,31 @@ class NetworkFrame:
     def apply_node_features(
         self, columns: ColumnsType, axis: EdgeAxisType = "both", inplace: bool = False
     ) -> Optional["NetworkFrame"]:
-        """Apply node features to the edges dataframe."""
+        """
+        Apply features from `.nodes` to `.edges`.
+
+        This will create new columns in `.edges` with the node features of the source
+        node as `"source_{column}"` and the node features of the target node as
+        `"target_{column}"`. This can be useful for performing operations on edges based
+        on the nodes they connect.
+
+        Parameters
+        ----------
+        columns
+            The columns in `.nodes` to apply to the edges.
+        axis
+            Whether to apply the features to the source nodes (`source`), target nodes
+            (`target`), or both (`both`).
+        inplace
+            Whether to modify the `NetworkFrame` rather than returning a new one.
+
+        Returns
+        -------
+        :
+            A new NetworkFrame with the node features applied to the edges. If
+            `inplace=True`, returns `None`.
+
+        """
         if not inplace:
             edges = self.edges.copy()
         else:
@@ -433,8 +458,32 @@ class NetworkFrame:
         else:
             return NetworkFrame(self.nodes, edges, directed=self.directed)
 
-    def to_adjacency(self, weight_col: str = "weight", aggfunc="sum") -> pd.DataFrame:
-        """Return the adjacency matrix of the network."""
+    def to_adjacency(
+        self, weight_col: str = "weight", aggfunc: Union[str, Callable] = "sum"
+    ) -> pd.DataFrame:
+        """
+        Return the [adjacency matrix](https://en.wikipedia.org/wiki/Adjacency_matrix)
+        of the network as a [pandas.DataFrame][].
+
+        Source nodes are the rows and target nodes are the columns. The adjacency matrix
+        will be returned in the same order as the nodes in `.nodes`.
+
+        Parameters
+        ----------
+        weight_col
+            The column in `.edges` to use as the weight for the adjacency matrix.
+            In the current implementation this must be set; future releases will support
+            `None` to deal with unweighted networks.
+        aggfunc
+            The function to use to aggregate multiple edges between the same source and
+            target nodes. See [pandas.DataFrame.pivot_table][] for more information.
+
+        Returns
+        -------
+        :
+            The adjacency matrix of the network as a [pd.DataFrame][].
+        """
+
         # TODO: wondering if the sparse method of doing this would actually be faster
         # here too...
         adj_df = self.edges.pivot_table(
@@ -456,16 +505,20 @@ class NetworkFrame:
 
     def to_networkx(
         self,
-        create_using: Union[
-            nx.Graph, nx.DiGraph, nx.MultiDiGraph, nx.MultiGraph
+        create_using: Optional[
+            Union[nx.Graph, nx.DiGraph, nx.MultiDiGraph, nx.MultiGraph]
         ] = None,
     ) -> Union[nx.Graph, nx.DiGraph, nx.MultiDiGraph, nx.MultiGraph]:
-        """Return a networkx graph of the network.
+        """Return a NetworkX graph representation of the network.
+
+        This NetworkX graph also includes all node and edge attributes.
 
         Parameters
         ----------
         create_using
-            A NetworkX graph class to use to create the graph.
+            The [NetworkX graph class](https://networkx.org/documentation/stable/reference/classes/index.html)
+            to use to create the graph. If `None`, defaults to `nx.MultiDiGraph` if the
+            network is directed and `nx.MultiGraph` if the network is undirected.
 
         Returns
         -------
@@ -488,7 +541,7 @@ class NetworkFrame:
             create_using=create_using,
         )
 
-        # add missing nodes to gf
+        # add any missing nodes to g
         index = self.nodes.index
         missing_nodes = index.difference(g.nodes)
         g.add_nodes_from(missing_nodes)
@@ -500,7 +553,37 @@ class NetworkFrame:
     def to_sparse_adjacency(
         self, weight_col: Optional[str] = None, aggfunc="sum", verify_integrity=True
     ) -> csr_array:
-        """Return the adjacency matrix of the network as a sparse array."""
+        """
+        Return the [adjacency matrix](https://en.wikipedia.org/wiki/Adjacency_matrix)
+        of the network as a [scipy.sparse.csr_array][].
+
+        Source nodes are the rows and target nodes are the columns. The adjacency matrix
+        will be returned in the same order as the nodes in `.nodes`.
+
+        Parameters
+        ----------
+        weight_col
+            The column in `.edges` to use as the weight for the adjacency matrix. If
+            `None`, then the number of edges between the source and target nodes will be
+            used.
+        aggfunc
+            The function to use to aggregate multiple edges between the same source and
+            target nodes. See [pandas.DataFrame.pivot_table][] for more information.
+        verify_integrity
+            Whether to verify that all source and target nodes are in the nodes index.
+            Adds some overhead but prevents a difficult to decipher error later on if
+            the node table is missing entries.
+
+        Returns
+        -------
+        :
+            The adjacency matrix of the network as a [scipy.sparse.csr_array][].
+
+        Notes
+        -----
+        This method currently only supports [scipy.sparse.csr_array][] output, but in
+        the future may support other sparse array formats.
+        """
         edges = self.edges
         # TODO only necessary since there might be duplicate edges
         # might be more efficient to have a attributed checking this, e.g. set whether
@@ -551,7 +634,25 @@ class NetworkFrame:
     def largest_connected_component(
         self, inplace: bool = False, verbose: bool = False
     ) -> Optional["NetworkFrame"]:
-        """Return the largest connected component of the network."""
+        """
+        Find the largest [connected component](https://en.wikipedia.org/wiki/Component_(graph_theory))
+        of the network.
+
+        Parameters
+        ----------
+        inplace
+            Whether to modify the `NetworkFrame` to select only the largest connected
+            component, rather than returning a new one.
+        verbose
+            Whether to print the number of nodes removed when taking the largest connected
+            component.
+
+        Returns
+        -------
+        :
+            A new NetworkFrame with only the largest connected component. If
+            `inplace=True`, returns `None`.
+        """
         _, labels = self._get_component_indices()
         label_counts = pd.Series(labels).value_counts()
         biggest_label = label_counts.idxmax()
@@ -572,7 +673,15 @@ class NetworkFrame:
             return NetworkFrame(nodes, edges, directed=self.directed)
 
     def connected_components(self) -> Iterator["NetworkFrame"]:
-        """Return the connected components of the network."""
+        """
+        Iterate over the [connected components](https://en.wikipedia.org/wiki/Component_(graph_theory))
+        of the network.
+
+        Yields
+        ------
+        :
+            A new NetworkFrame for each connected component.
+        """
         n_components, labels = self._get_component_indices()
         index = self.nodes.index
 
@@ -581,18 +690,48 @@ class NetworkFrame:
             yield self.loc[this_index, this_index]
 
     def n_connected_components(self) -> int:
-        """Return the number of connected components of the network."""
+        """
+        Return the number of [connected components](https://en.wikipedia.org/wiki/Component_(graph_theory))
+        of the network.
+
+        Returns
+        -------
+        :
+            The number of connected components.
+        """
         n_components, _ = self._get_component_indices()
         return n_components
 
     def is_fully_connected(self) -> bool:
-        """Return whether the network is fully connected."""
+        """
+        Return whether the network is fully connected.
+
+        Returns
+        -------
+        :
+            Whether the network is fully connected.
+        """
         return self.n_connected_components() == 1
 
     def label_nodes_by_component(
-        self, inplace: bool = False, name: str = "component"
+        self, name: str = "component", inplace: bool = False
     ) -> Optional["NetworkFrame"]:
-        """Add a column labeling nodes by which connected component they are in."""
+        """
+        Add a column to `.nodes` labeling which connected component they are in.
+
+        Parameters
+        ----------
+        name
+            The name of the column to add to `.nodes`.
+        inplace
+            Whether to modify the `NetworkFrame` rather than returning a new one.
+
+        Returns
+        -------
+        :
+            A new NetworkFrame with the component labels added to `.nodes`. If
+            `inplace=True`, returns `None`.
+        """
         _, labels = self._get_component_indices()
 
         if inplace:
