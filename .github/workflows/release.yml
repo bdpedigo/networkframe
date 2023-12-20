@@ -24,6 +24,7 @@ on:
 
 jobs:
   test:
+    name: Run tests
     runs-on: ubuntu-latest
     steps:
       - name: Run tests
@@ -195,7 +196,7 @@ jobs:
           poetry run mike set-default stable --push
 
       - name: Test build versioned docs with mike
-        if: ${{ github.event.inputs.dry-run == 'false' }}
+        if: ${{ github.event.inputs.dry-run == 'true' }}
         run: |
           poetry run mike deploy --update-aliases ${{ env.new_version }} stable
           poetry run mike set-default stable
