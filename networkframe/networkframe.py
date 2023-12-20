@@ -94,7 +94,7 @@ class NetworkFrame:
 
     @property
     def sources(self) -> pd.Index:
-        """Source node IDs of the network."""
+        # """Source node IDs of the network."""
         if self.induced:
             return self.nodes.index
         else:
@@ -105,7 +105,7 @@ class NetworkFrame:
 
     @property
     def targets(self) -> pd.Index:
-        """Return the target node IDs of the network."""
+        # """Return the target node IDs of the network."""
         if self.induced:
             return self.nodes.index
         else:
@@ -116,12 +116,12 @@ class NetworkFrame:
 
     @property
     def source_nodes(self) -> pd.DataFrame:
-        """Return the source nodes of the network and their metadata."""
+        # """Return the source nodes of the network and their metadata."""
         return self.nodes.loc[self.sources]
 
     @property
     def target_nodes(self) -> pd.DataFrame:
-        """Return the target nodes of the network and their metadata."""
+        # """Return the target nodes of the network and their metadata."""
         return self.nodes.loc[self.targets]
 
     def __repr__(self) -> str:
@@ -196,7 +196,7 @@ class NetworkFrame:
     def remove_edges(
         self, remove_edges: pd.DataFrame, inplace=False
     ) -> Optional["NetworkFrame"]:
-        """Remove edges from the network."""
+        # """Remove edges from the network."""
         # TODO handle inplace better
 
         remove_edges_index = pd.MultiIndex.from_frame(
@@ -216,7 +216,7 @@ class NetworkFrame:
     def add_nodes(
         self, new_nodes: pd.DataFrame, inplace=False
     ) -> Optional["NetworkFrame"]:
-        """Add nodes to the network."""
+        # """Add nodes to the network."""
         nodes = pd.concat([self.nodes, new_nodes], copy=False, sort=False, axis=0)
         if inplace:
             self.nodes = nodes
@@ -227,7 +227,7 @@ class NetworkFrame:
     def add_edges(
         self, new_edges: pd.DataFrame, inplace=False
     ) -> Optional["NetworkFrame"]:
-        """Add edges to the network."""
+        # """Add edges to the network."""
         edges = pd.concat([self.edges, new_edges], copy=False, sort=False, axis=0)
         if inplace:
             self.edges = edges
@@ -354,7 +354,44 @@ class NetworkFrame:
             return NetworkFrame(self.nodes, edges, directed=self.directed)
 
     def remove_unused_nodes(self, inplace=False) -> Optional["NetworkFrame"]:
-        """Remove nodes that are not connected to any edges."""
+        """
+        Remove nodes that are not connected to any edges.
+
+        Parameters
+        ----------
+        inplace
+            Whether to modify the `NetworkFrame` rather than returning a new one.
+
+        Returns
+        -------
+        :
+            A new NetworkFrame with the unused nodes removed. If `inplace=True`, returns
+            `None`.
+
+        Examples
+        --------
+        >>> from networkframe import NetworkFrame
+        >>> import pandas as pd
+        >>> nodes = pd.DataFrame(
+        ...     {
+        ...         "name": ["A", "B", "C", "D", "E"],
+        ...         "color": ["red", "blue", "blue", "red", "blue"],
+        ...     },
+        ...     index=[0, 1, 2, 3, 4],
+        ... )
+        >>> edges = pd.DataFrame(
+        ...     {
+        ...         "source": [0, 1, 2, 2, 3],
+        ...         "target": [1, 2, 3, 1, 0],
+        ...         "weight": [1, 2, 3, 4, 5],
+        ...     }
+        ... )
+        >>> nf = NetworkFrame(nodes, edges)
+        >>> sub_nf = nf.remove_unused_nodes()
+        >>> sub_nf
+        NetworkFrame(nodes=(4, 2), edges=(5, 3))
+        """
+
         index = self.nodes.index
         source_index = index.intersection(self.edges.source)
         target_index = index.intersection(self.edges.target)
