@@ -459,7 +459,7 @@ class NetworkFrame:
         create_using: Union[
             nx.Graph, nx.DiGraph, nx.MultiDiGraph, nx.MultiGraph
         ] = None,
-    ):
+    ) -> Union[nx.Graph, nx.DiGraph, nx.MultiDiGraph, nx.MultiGraph]:
         """Return a networkx graph of the network.
 
         Parameters
@@ -469,7 +469,7 @@ class NetworkFrame:
 
         Returns
         -------
-        nx.Graph
+        :
             A NetworkX representation of the network.
         """
 
