@@ -82,7 +82,7 @@ jobs:
 
     steps:
       - name: Show version
-        run: echo ${{ steps.get-version.outputs.VERSION }}
+        run: echo ${{ needs.bump.outputs.VERSION}}
       - uses: actions/checkout@v4
         with:
           # want this to be the version that was just bumped
