@@ -87,7 +87,7 @@ class NetworkFrame:
 
         Returns
         -------
-        NetworkFrame
+        :
             A copy of the NetworkFrame.
         """
         return copy.deepcopy(self)
@@ -125,17 +125,42 @@ class NetworkFrame:
         return self.nodes.loc[self.targets]
 
     def __repr__(self) -> str:
-        """Return a string representation of the NetworkFrame."""
-        out = f"NetworkFrame(nodes={self.nodes.shape}, edges={self.edges.shape}, "
-        out += f"induced={self.induced}, directed={self.directed})"
+        """Return a string representation of the NetworkFrame.
+
+        Returns
+        -------
+        :
+            A string representation of the NetworkFrame.
+        """
+        out = f"NetworkFrame(nodes={self.nodes.shape}, edges={self.edges.shape})"
+        # out += f"induced={self.induced}, directed={self.directed})"
         return out
 
     def __len__(self) -> int:
-        """Return the number of nodes in the network."""
+        """Return the number of nodes in the network.
+
+        Returns
+        -------
+        :
+            The number of nodes in the network.
+        """
         return len(self.nodes)
 
     def reindex_nodes(self, index: pd.Index) -> "NetworkFrame":
-        """Reindex the nodes dataframe, also removes edges as necessary."""
+        """Reindex `.nodes`, also removes edges as necessary.
+
+        See [pandas.DataFrame.reindex][] for more information on reindexing.
+
+        Parameters
+        ----------
+        index
+            The new index to use.
+
+        Returns
+        -------
+        :
+            A new NetworkFrame with the reindexed nodes.
+        """
         nodes = self.nodes.reindex(index=index, axis=0)
         edges = self.edges.query("(source in @nodes.index) & (target in @nodes.index)")
         return NetworkFrame(nodes, edges, directed=self.directed)
@@ -143,7 +168,19 @@ class NetworkFrame:
     def remove_nodes(
         self, nodes: Union[pd.DataFrame, pd.Index, list, np.ndarray], inplace=False
     ) -> Optional["NetworkFrame"]:
-        """Remove nodes from the network and remove edges that are no longer valid."""
+        """Remove nodes from the network and remove edges that are no longer valid.
+
+        Parameters
+        ----------
+        nodes
+            The index of nodes to remove. If a `pd.DataFrame` is passed, its index is
+            used; otherwise the object is interpreted as an index-like.
+
+        Returns
+        -------
+        :
+            A new NetworkFrame with the nodes removed. If `inplace=True`, returns `None`.
+        """
         if isinstance(nodes, pd.DataFrame):
             nodes = nodes.index
         nodes = self.nodes.drop(index=nodes)
@@ -199,10 +236,56 @@ class NetworkFrame:
             return NetworkFrame(self.nodes, edges, directed=self.directed)
 
     def query_nodes(
-        self, query: str, inplace=False, local_dict=None, global_dict=None
+        self, expr: str, inplace=False, local_dict=None, global_dict=None
     ) -> Optional["NetworkFrame"]:
-        """Query the nodes dataframe and remove edges that are no longer valid."""
-        nodes = self.nodes.query(query, local_dict=local_dict, global_dict=global_dict)
+        """
+        Select a subnetwork via a query the `.nodes` DataFrame.
+
+        Parameters
+        ----------
+        expr
+            The query to use on `.nodes`. See [pandas.DataFrame.query][] for more
+            information.
+        inplace
+            Whether to modify the `NetworkFrame` rather than returning a new one.
+        local_dict
+            A dictionary of local variables. Useful for using the `@` expressions in
+            [pandas.DataFrame.query]. It may be useful to pass `local_dict=locals()` to
+            accomplish this.
+        global_dict
+            A dictionary of global variables. Useful for using the `@` expressions in
+            [pandas.DataFrame.query]. It may be useful to pass `global_dict=globals()`
+            to accomplish this.
+
+        Returns
+        -------
+        :
+            A new NetworkFrame for the subnetwork. If `inplace=True`, returns `None`.
+
+        Examples
+        --------
+        >>> from networkframe import NetworkFrame
+        >>> import pandas as pd
+        >>> nodes = pd.DataFrame(
+        ...     {
+        ...         "name": ["A", "B", "C", "D", "E"],
+        ...         "color": ["red", "blue", "blue", "red", "blue"],
+        ...     },
+        ...     index=[0, 1, 2, 3, 4],
+        ... )
+        >>> edges = pd.DataFrame(
+        ...     {
+        ...         "source": [0, 1, 2, 3, 4],
+        ...         "target": [1, 2, 3, 4, 0],
+        ...         "weight": [1, 2, 3, 4, 5],
+        ...     }
+        ... )
+        >>> nf = NetworkFrame(nodes, edges)
+        >>> sub_nf = nf.query_nodes("color == 'red'") # select subnetwork of red nodes
+        >>> sub_nf
+        NetworkFrame(nodes=(2, 2), edges=(2, 3))
+        """
+        nodes = self.nodes.query(expr, local_dict=local_dict, global_dict=global_dict)
         # get the edges that are connected to the nodes that are left after the query
         edges = self.edges.query("(source in @nodes.index) & (target in @nodes.index)")
         if inplace:
@@ -213,10 +296,57 @@ class NetworkFrame:
             return NetworkFrame(nodes, edges, directed=self.directed)
 
     def query_edges(
-        self, query: str, inplace=False, local_dict=None, global_dict=None
+        self, expr: str, inplace=False, local_dict=None, global_dict=None
     ) -> Optional["NetworkFrame"]:
-        """Query the edges dataframe."""
-        edges = self.edges.query(query, local_dict=local_dict, global_dict=global_dict)
+        """
+        Select a subnetwork via a query the `.edges` DataFrame.
+
+        Parameters
+        ----------
+        expr
+            The query to use on `.edges`. See [pandas.DataFrame.query][] for more
+            information.
+        inplace
+            Whether to modify the `NetworkFrame` rather than returning a new one.
+        local_dict
+            A dictionary of local variables. Useful for using the `@` expressions in
+            [pandas.DataFrame.query]. It may be useful to pass `local_dict=locals()` to
+            accomplish this.
+        global_dict
+            A dictionary of global variables. Useful for using the `@` expressions in
+            [pandas.DataFrame.query]. It may be useful to pass `global_dict=globals()`
+            to accomplish this.
+
+        Returns
+        -------
+        :
+            A new NetworkFrame for the subnetwork. If `inplace=True`, returns `None`.
+
+        Examples
+        --------
+        >>> from networkframe import NetworkFrame
+        >>> import pandas as pd
+        >>> nodes = pd.DataFrame(
+        ...     {
+        ...         "name": ["A", "B", "C", "D", "E"],
+        ...         "color": ["red", "blue", "blue", "red", "blue"],
+        ...     },
+        ...     index=[0, 1, 2, 3, 4],
+        ... )
+        >>> edges = pd.DataFrame(
+        ...     {
+        ...         "source": [0, 1, 2, 3, 4],
+        ...         "target": [1, 2, 3, 4, 0],
+        ...         "weight": [1, 2, 3, 4, 5],
+        ...     }
+        ... )
+        >>> nf = NetworkFrame(nodes, edges)
+        >>> sub_nf = nf.query_edges("weight > 2") # select subnetwork of edges with weight > 2
+        >>> sub_nf
+        NetworkFrame(nodes=(5, 2), edges=(3, 3))
+
+        """
+        edges = self.edges.query(expr, local_dict=local_dict, global_dict=global_dict)
         if inplace:
             self.edges = edges
             return None
@@ -464,7 +594,41 @@ class NetworkFrame:
 
     @property
     def loc(self) -> "LocIndexer":
-        """A LocIndexer for the frame."""
+        """Access a subgraph by node ID(s).
+
+        `.loc[]` is primarily label based, but in the future a boolean array may be
+        supported. Currently, `.loc` only supports selecting both rows and columns, i.e.
+        `nf.loc[row_indexer, column_indexer]`.
+
+
+        Examples
+        --------
+        >>> from networkframe import NetworkFrame
+        >>> import pandas as pd
+        >>> nodes = pd.DataFrame(
+        ...     {
+        ...         "name": ["A", "B", "C", "D", "E"],
+        ...         "color": ["red", "blue", "blue", "red", "blue"],
+        ...     },
+        ...     index=[0, 1, 2, 3, 4],
+        ... )
+        >>> edges = pd.DataFrame(
+        ...     {
+        ...         "source": [0, 1, 2, 3, 4],
+        ...         "target": [1, 2, 3, 4, 0],
+        ...         "weight": [1, 2, 3, 4, 5],
+        ...     }
+        ... )
+        >>> nf = NetworkFrame(nodes, edges)
+        >>> sub_nf = nf.loc[[1, 2], [2, 3]]
+        >>> sub_nf
+        NetworkFrame(nodes=(3, 1), edges=(2, 3))
+        >>> sub_nf.to_adjacency()
+        target  2  3
+        source
+        1       2  0
+        2       0  3
+        """
         return LocIndexer(self)
 
     def __eq__(self, other: object) -> bool:
@@ -503,8 +667,15 @@ class NetworkFrame:
         """
         return not self.__eq__(other)
 
+    # TODO make this docstring use automatic cross-reference to pandas docs
     def to_dict(self, orient: str = "dict") -> dict:
-        """Return a dictionary representation of the NetworkFrame."""
+        """Return a dictionary representation of the NetworkFrame.
+
+        Parameters
+        ----------
+        orient
+            The format of the dictionary according to pandas.DataFrame.to_dict.
+        """
         return {
             "nodes": self.nodes.to_dict(orient=orient),
             "edges": self.edges.to_dict(orient=orient),
