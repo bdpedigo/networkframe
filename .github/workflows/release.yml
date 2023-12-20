@@ -122,6 +122,7 @@ jobs:
             ./dist/*.tar.gz
             ./dist/*.whl
       - name: Create GitHub Release
+        if: ${{ github.event.inputs.dry-run == 'false' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: >-
