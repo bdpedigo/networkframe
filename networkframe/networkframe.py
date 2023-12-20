@@ -3,7 +3,7 @@
 
 import copy
 from collections.abc import Iterator
-from typing import Callable, Literal, Optional, Union
+from typing import Any, Callable, Literal, Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -744,29 +744,31 @@ class NetworkFrame:
             nodes[name] = nodes[name].astype("Int64")
             return NetworkFrame(nodes, self.edges, directed=self.directed)
 
-    def groupby_nodes(self, by=None, axis="both", **kwargs) -> "NodeGroupBy":
+    def groupby_nodes(
+        self, by: Union[Any, list], axis: EdgeAxisType = "both", **kwargs
+    ) -> "NodeGroupBy":
         """Group the frame by node data for the source or target (or both).
+
+        See [pandas.DataFrame.groupby][] for more information.
 
         Parameters
         ----------
-        by : _type_, optional
-            _description_, by default None
-        axis : str, optional
-            _description_, by default 'both'
+        by
+            Column name or list of column names to group by.
+        axis
+            Whether to group by the source nodes (`source` or `0`), target nodes
+            (`target` or `0`), or both (`both`).
+        kwargs
+            Additional keyword arguments to pass to [pandas.DataFrame.groupby][].
 
         Returns
         -------
-        _type_
-            _description_
-
-        Raises
-        ------
-        ValueError
-            _description_
+        :
+            A `NodeGroupBy` object representing the specified groups.
         """
-        if axis == 0:
+        if axis == 0 or axis == "source":
             source_nodes_groupby = self.source_nodes.groupby(by=by, **kwargs)
-        elif axis == 1:
+        elif axis == 1 or axis == "target":
             target_nodes_groupby = self.target_nodes.groupby(by=by, **kwargs)
         elif axis == "both":
             source_nodes_groupby = self.source_nodes.groupby(by=by, **kwargs)
@@ -858,7 +860,12 @@ class NetworkFrame:
         Parameters
         ----------
         orient
-            The format of the dictionary according to pandas.DataFrame.to_dict.
+            The format of the dictionary according to [pandas.DataFrame.to_dict].
+
+        Returns
+        -------
+        :
+            A dictionary representation of the NetworkFrame.
         """
         return {
             "nodes": self.nodes.to_dict(orient=orient),
@@ -867,14 +874,46 @@ class NetworkFrame:
         }
 
     def to_json(self, orient: str = "dict") -> str:
-        """Return a JSON representation of the NetworkFrame."""
+        """
+        Return a JSON (string) representation of the NetworkFrame.
+
+        Parameters
+        ----------
+        orient
+            The format of the dictionary according to [pandas.DataFrame.to_dict][].
+
+        Returns
+        -------
+        :
+            A JSON (string) representation of the NetworkFrame.
+        """
         import json
 
         return json.dumps(self.to_dict(orient=orient))
 
     @classmethod
     def from_dict(cls, d: dict, orient="columns", index_dtype=int) -> "NetworkFrame":
-        """Return a NetworkFrame from a dictionary representation."""
+        """
+        Return a NetworkFrame from a dictionary representation.
+
+        The dictionary representation should have keys "nodes", "edges", and "directed".
+        The values of "nodes" and "edges" should be dictionaries with the same format as
+        the output of [pandas.DataFrame.to_dict][] according to `orient`.
+
+        Parameters
+        ----------
+        d
+            The dictionary representation of the NetworkFrame.
+        orient
+            The format of the dictionary according to [pandas.DataFrame.to_dict][].
+        index_dtype
+            The data type of the index of the nodes DataFrame.
+
+        Returns
+        -------
+        :
+            A NetworkFrame.
+        """
         edges = pd.DataFrame.from_dict(d["edges"], orient=orient)
         nodes = pd.DataFrame.from_dict(d["nodes"], orient=orient)
         nodes.index = nodes.index.astype(index_dtype)
