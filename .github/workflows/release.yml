@@ -72,6 +72,8 @@ jobs:
         with:
           python-version: "3.11"
       - uses: abatilo/actions-poetry@v2
+      - name: Check version
+        run: echo "${poetry verision -s}"
       - name: Build wheels and source tarball
         run: poetry build
       - name: Store the distribution packages
@@ -145,13 +147,7 @@ jobs:
   docs:
     name: Release new docs version
     needs: publish-to-pypi
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.11"]
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
       - name: Get repo
@@ -177,7 +173,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ./.venv
-          key: venv-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+          key: venv-3.11-${{ hashFiles('poetry.lock') }}
 
       - name: Install dependencies
         run: poetry install --with dev
