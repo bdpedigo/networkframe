@@ -236,7 +236,11 @@ class NetworkFrame:
             return NetworkFrame(self.nodes, edges, directed=self.directed)
 
     def query_nodes(
-        self, expr: str, inplace=False, local_dict=None, global_dict=None
+        self,
+        expr: str,
+        inplace: bool = False,
+        local_dict: Optional[dict] = None,
+        global_dict: Optional[dict] = None,
     ) -> Optional["NetworkFrame"]:
         """
         Select a subnetwork via a query the `.nodes` DataFrame.
@@ -250,11 +254,11 @@ class NetworkFrame:
             Whether to modify the `NetworkFrame` rather than returning a new one.
         local_dict
             A dictionary of local variables. Useful for using the `@` expressions in
-            [pandas.DataFrame.query]. It may be useful to pass `local_dict=locals()` to
+            [pandas.DataFrame.query][]. It may be useful to pass `local_dict=locals()` to
             accomplish this.
         global_dict
             A dictionary of global variables. Useful for using the `@` expressions in
-            [pandas.DataFrame.query]. It may be useful to pass `global_dict=globals()`
+            [pandas.DataFrame.query][]. It may be useful to pass `global_dict=globals()`
             to accomplish this.
 
         Returns
@@ -296,7 +300,11 @@ class NetworkFrame:
             return NetworkFrame(nodes, edges, directed=self.directed)
 
     def query_edges(
-        self, expr: str, inplace=False, local_dict=None, global_dict=None
+        self,
+        expr: str,
+        inplace: bool = False,
+        local_dict: Optional[dict] = None,
+        global_dict: Optional[dict] = None,
     ) -> Optional["NetworkFrame"]:
         """
         Select a subnetwork via a query the `.edges` DataFrame.
@@ -310,11 +318,11 @@ class NetworkFrame:
             Whether to modify the `NetworkFrame` rather than returning a new one.
         local_dict
             A dictionary of local variables. Useful for using the `@` expressions in
-            [pandas.DataFrame.query]. It may be useful to pass `local_dict=locals()` to
+            [pandas.DataFrame.query][]. It may be useful to pass `local_dict=locals()` to
             accomplish this.
         global_dict
             A dictionary of global variables. Useful for using the `@` expressions in
-            [pandas.DataFrame.query]. It may be useful to pass `global_dict=globals()`
+            [pandas.DataFrame.query][]. It may be useful to pass `global_dict=globals()`
             to accomplish this.
 
         Returns
@@ -353,7 +361,7 @@ class NetworkFrame:
         else:
             return NetworkFrame(self.nodes, edges, directed=self.directed)
 
-    def remove_unused_nodes(self, inplace=False) -> Optional["NetworkFrame"]:
+    def remove_unused_nodes(self, inplace: bool = False) -> Optional["NetworkFrame"]:
         """
         Remove nodes that are not connected to any edges.
 
@@ -404,7 +412,7 @@ class NetworkFrame:
             return NetworkFrame(nodes, self.edges, directed=self.directed)
 
     def apply_node_features(
-        self, columns: ColumnsType, axis: EdgeAxisType = "both", inplace=False
+        self, columns: ColumnsType, axis: EdgeAxisType = "both", inplace: bool = False
     ) -> Optional["NetworkFrame"]:
         """Apply node features to the edges dataframe."""
         if not inplace:
