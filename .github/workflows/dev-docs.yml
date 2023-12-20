@@ -1,9 +1,9 @@
-name: Dev docs
+name: dev docs
 
 on:
   # run this workflow when dev checks pass
   workflow_run:
-    workflows: ["Dev checks"]
+    workflows: ["dev checks"]
     types:
       - completed
 

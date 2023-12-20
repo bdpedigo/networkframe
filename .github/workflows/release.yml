@@ -1,5 +1,5 @@
 # REF: https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/#the-whole-ci-cd-workflow
-name: Publish release
+name: publish release
 
 on:
   # run this workflow when manually triggered

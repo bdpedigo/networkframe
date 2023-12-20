@@ -1,10 +1,10 @@
 # REF: https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/#the-whole-ci-cd-workflow
-name: Publish test Python distribution to TestPyPI
+name: test release
 
 on:
   # run this workflow when dev checks pass
   workflow_run:
-    workflows: ["Dev checks"]
+    workflows: ["dev checks"]
     types:
       - completed
 
