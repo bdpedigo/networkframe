@@ -20,6 +20,7 @@ jobs:
   bump:
     name: Bump version
     runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -63,8 +64,7 @@ jobs:
 
   publish-to-pypi:
     name: Publish to PyPI
-    needs:
-      - build
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -83,8 +83,7 @@ jobs:
 
   github-release:
     name: Release to GitHub
-    needs:
-      - publish-to-pypi
+    needs: publish-to-pypi
     runs-on: ubuntu-latest
 
     permissions:
@@ -124,6 +123,7 @@ jobs:
 
   docs:
     name: Release new docs version
+    needs: publish-to-pypi
 
     strategy:
       matrix:
@@ -167,7 +167,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Get version
-        run: echo "new_version=$(poetry version -s')" >> $GITHUB_ENV
+        run: echo "new_version=$(poetry version -s)" >> $GITHUB_ENV
 
       - name: Build and push versioned docs with mike
         run: |
