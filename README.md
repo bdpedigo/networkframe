@@ -123,7 +123,7 @@ print(nf.edges)
 **Pros:**
 
 - Lightweight: `NetworkFrame` objects are just two DataFrames, so they're easy to manipulate and integrate with other tools.
-- Interoperable: can output to `NetworkX`, `numpy` and `scipy` sparse matrices, and other formats (coming soon).
+- Interoperable: can output to `NetworkX`, `numpy` arrays, and `scipy` sparse arrays.
 - Flexible: can represent directed, undirected, and multigraphs.
 - Familiar: if you're familiar with `Pandas` `DataFrames`, that is. As much as possible, `networkframe` uses the same syntax as `Pandas`, but also just gives you access to the underlying tables.
 - Extensible: it's easy to use `NetworkFrame` as a base graph - for instance, you could make a `SpatialNetworkFrame` that adds spatial information to the nodes and edges.
@@ -136,7 +136,7 @@ print(nf.edges)
 **Room for improvement:**
 
 - Early development: there are likely bugs and missing features. Please report any issues you find!
-- More interoperability: `networkframe` can currently output to `NetworkX`, `numpy` and `scipy` sparse matrices, and other formats (coming soon). It would be nice to be able to read in from these formats as well.
+- More interoperability: `networkframe` can currently output to `NetworkX`, `numpy`, and `scipy` sparse arrays. It would be nice to be able to read in from these formats in a more convenient way, and ouput to other formats like `igraph` or `graph-tool`.
 - Graph-type handling: `networkframe` has mainly been tested on directed graphs, less so for undirected and multigraphs.
 
 ## Credits
