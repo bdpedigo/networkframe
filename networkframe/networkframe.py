@@ -782,6 +782,7 @@ class NetworkFrame:
         if inplace:
             self.nodes = out.nodes
             self.edges = out.edges
+            return None
         else:
             return out
 
