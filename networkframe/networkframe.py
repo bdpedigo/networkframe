@@ -744,7 +744,9 @@ class NetworkFrame:
             nodes[name] = nodes[name].astype("Int64")
             return NetworkFrame(nodes, self.edges, directed=self.directed)
 
-    def select_component_from_node(self, node_id: Any, directed=True) -> "NetworkFrame":
+    def select_component_from_node(
+        self, node_id: Any, directed=True, inplace=False
+    ) -> Optional["NetworkFrame"]:
         """
         Select the connected component containing the given node.
 
@@ -760,12 +762,14 @@ class NetworkFrame:
         directed
             Whether to consider the network as directed for computing the reachable
             nodes.
+        inplace
+            Whether to modify the `NetworkFrame` rather than returning a new one.
 
         Returns
         -------
         :
             A new NetworkFrame with only the connected component containing the given
-            node.
+            node. If `inplace=True`, returns `None`.
         """
         from scipy.sparse.csgraph import shortest_path
 
@@ -774,7 +778,13 @@ class NetworkFrame:
 
         dists = shortest_path(sparse_adjacency, directed=directed, indices=node_iloc)
         mask = ~np.isinf(dists)
-        return self.loc[mask, mask]
+        out = self.loc[mask, mask]
+        if inplace:
+            self.nodes = out.nodes
+            self.edges = out.edges
+        else:
+            return out
+        
 
     def groupby_nodes(
         self, by: Union[Any, list], axis: EdgeAxisType = "both", **kwargs

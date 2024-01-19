@@ -27,6 +27,8 @@ jobs:
     name: Run tests
     runs-on: ubuntu-latest
     steps:
+      - name: Get repo
+        uses: actions/checkout@v4
       - name: Run tests
         if: ${{ github.event.inputs.skip-tests == 'false' }}
         uses: ./.github/workflows/dev.yml
