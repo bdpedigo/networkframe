@@ -784,7 +784,6 @@ class NetworkFrame:
             self.edges = out.edges
         else:
             return out
-        
 
     def groupby_nodes(
         self, by: Union[Any, list], axis: EdgeAxisType = "both", **kwargs
