@@ -744,6 +744,38 @@ class NetworkFrame:
             nodes[name] = nodes[name].astype("Int64")
             return NetworkFrame(nodes, self.edges, directed=self.directed)
 
+    def select_component_from_node(self, node_id: Any, directed=True) -> "NetworkFrame":
+        """
+        Select the connected component containing the given node.
+
+        This function avoids computing the entire connected component structure of the
+        graph, instead using a shortest path algorithm to find the connected component
+        of the node of interest. As such, it may be faster than using
+        `connected_components`.
+
+        Parameters
+        ----------
+        node_id
+            The node ID to use to select the connected component.
+        directed
+            Whether to consider the network as directed for computing the reachable
+            nodes.
+
+        Returns
+        -------
+        :
+            A new NetworkFrame with only the connected component containing the given
+            node.
+        """
+        from scipy.sparse.csgraph import shortest_path
+
+        sparse_adjacency = self.to_sparse_adjacency()
+        node_iloc = self.nodes.index.get_loc(node_id)
+
+        dists = shortest_path(sparse_adjacency, directed=directed, indices=node_iloc)
+        mask = ~np.isinf(dists)
+        return self.loc[mask, mask]
+
     def groupby_nodes(
         self, by: Union[Any, list], axis: EdgeAxisType = "both", **kwargs
     ) -> "NodeGroupBy":
