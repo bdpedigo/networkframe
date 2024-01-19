@@ -574,6 +574,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#networkframe.NetworkFrame.select_component_from_node" class="md-nav__link">
+    <span class="md-ellipsis">
+      select_component_from_node()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#networkframe.NetworkFrame.to_adjacency" class="md-nav__link">
     <span class="md-ellipsis">
       to_adjacency()
@@ -933,6 +942,15 @@
   <a href="#networkframe.NetworkFrame.remove_unused_nodes" class="md-nav__link">
     <span class="md-ellipsis">
       remove_unused_nodes()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#networkframe.NetworkFrame.select_component_from_node" class="md-nav__link">
+    <span class="md-ellipsis">
+      select_component_from_node()
     </span>
   </a>
   
@@ -2677,6 +2695,98 @@ used; otherwise the object is interpreted as an index-like.</p>
 
 
 
+<h5 id="networkframe.NetworkFrame.select_component_from_node" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">select_component_from_node</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+<a href="#networkframe.NetworkFrame.select_component_from_node" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Select the connected component containing the given node.</p>
+<p>This function avoids computing the entire connected component structure of the
+graph, instead using a shortest path algorithm to find the connected component
+of the node of interest. As such, it may be faster than using
+<code>connected_components</code>.</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>node_id</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The node ID to use to select the connected component.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>directed</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Whether to consider the network as directed for computing the reachable
+nodes.</p>
+            </div>
+            <p>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>True</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+              <span class="doc-returns-annotation">
+                  <code><a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a></code>
+              </span>
+          </td>
+          <td class="doc-returns-details">
+            <div class="doc-md-description">
+              <p>A new NetworkFrame with only the connected component containing the given
+node.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
 <h5 id="networkframe.NetworkFrame.to_adjacency" class="doc doc-heading">
           <code class="highlight language-python"><span class="n">to_adjacency</span><span class="p">(</span><span class="n">weight_col</span><span class="o">=</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span></code>
 
@@ -3205,7 +3315,7 @@ the future may support other sparse array formats.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 2, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 19, 2024</span>
   </span>
 
     
@@ -3215,7 +3325,7 @@ the future may support other sparse array formats.</p>
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 2, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 19, 2024</span>
   </span>
 
     
