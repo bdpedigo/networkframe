@@ -2696,7 +2696,7 @@ used; otherwise the object is interpreted as an index-like.</p>
 
 
 <h5 id="networkframe.NetworkFrame.select_component_from_node" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">select_component_from_node</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">select_component_from_node</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 <a href="#networkframe.NetworkFrame.select_component_from_node" class="headerlink" title="Permanent link">&para;</a></h5>
 
@@ -2748,6 +2748,20 @@ nodes.</p>
             </p>
           </td>
         </tr>
+        <tr>
+          <td><code>inplace</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Whether to modify the <code>NetworkFrame</code> rather than returning a new one.</p>
+            </div>
+            <p>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>False</code>
+                </span>
+            </p>
+          </td>
+        </tr>
     </tbody>
   </table>
 
@@ -2764,13 +2778,13 @@ nodes.</p>
         <tr>
           <td>
               <span class="doc-returns-annotation">
-                  <code><a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a></code>
+                  <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-internal" title="networkframe.networkframe.NetworkFrame" href="#networkframe.NetworkFrame">NetworkFrame</a>]</code>
               </span>
           </td>
           <td class="doc-returns-details">
             <div class="doc-md-description">
               <p>A new NetworkFrame with only the connected component containing the given
-node.</p>
+node. If <code>inplace=True</code>, returns <code>None</code>.</p>
             </div>
           </td>
         </tr>
