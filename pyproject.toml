@@ -26,6 +26,7 @@ networkx = ">=2.8.8"
 pandas = "^2.1.4"
 python = ">=3.11,<3.13"
 scipy = "^1.11.4"
+setuptools = "^69.0.3"
 types-setuptools = "^69.0.0.20240115"
 
 [tool.poetry.group.dev.dependencies]
