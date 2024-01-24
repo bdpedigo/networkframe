@@ -3,7 +3,7 @@
 
 import copy
 from collections.abc import Iterator
-from typing import Any, Callable, Literal, Optional, Union
+from typing import Any, Callable, Literal, Optional, Self, Union
 
 import networkx as nx
 import numpy as np
@@ -37,6 +37,7 @@ class NetworkFrame:
         directed: bool = True,
         sources: Optional[pd.Index] = None,
         targets: Optional[pd.Index] = None,
+        validate: bool = True,
     ):
         """
         Parameters
@@ -52,20 +53,22 @@ class NetworkFrame:
             Specification of source nodes if representing a subgraph.
         targets
             Specification of target nodes if representing a subgraph.
+        validate
+            Whether to check that the nodes and edges are valid. This can be turned off
+            to speed performance but risks causing errors later on.
         """
 
-        # TODO checks ensuring that nodes and edges are valid.
-
-        if not nodes.index.is_unique:
-            raise ValueError("Node IDs must be unique.")
-
-        referenced_node_ids = np.union1d(
-            edges["source"].unique(), edges["target"].unique()
-        )
-        if not np.all(np.isin(referenced_node_ids, nodes.index)):
-            raise ValueError(
-                "All nodes referenced in `edges` must be in `nodes` index."
+        # TODO more checks ensuring that nodes and edges are valid.
+        if validate:
+            if not nodes.index.is_unique:
+                raise ValueError("Node IDs must be unique.")
+            referenced_node_ids = np.union1d(
+                edges["source"].unique(), edges["target"].unique()
             )
+            if not np.all(np.isin(referenced_node_ids, nodes.index)):
+                raise ValueError(
+                    "All nodes referenced in `edges` must be in `nodes` index."
+                )
 
         # should probably assume things like "source" and "target" columns
         # and that these elements are in the nodes dataframe
@@ -93,6 +96,33 @@ class NetworkFrame:
             A copy of the NetworkFrame.
         """
         return copy.deepcopy(self)
+
+    def _return(
+        self, nodes: pd.DataFrame, edges: pd.DataFrame, inplace: bool
+    ) -> Optional[Self]:
+        """Return a view of the NetworkFrame.
+
+        This is used internally to return a view of the NetworkFrame rather than
+        a copy.
+
+        Parameters
+        ----------
+        nodes
+            The nodes DataFrame.
+        edges
+            The edges DataFrame.
+
+        Returns
+        -------
+        :
+            A view of the NetworkFrame.
+        """
+        if inplace:
+            self.nodes = nodes
+            self.edges = edges
+            return None
+        else:
+            return self.__class__(nodes, edges, directed=self.directed, validate=False)
 
     @property
     def sources(self) -> pd.Index:
@@ -147,7 +177,7 @@ class NetworkFrame:
         """
         return len(self.nodes)
 
-    def reindex_nodes(self, index: pd.Index) -> "NetworkFrame":
+    def reindex_nodes(self, index: pd.Index) -> Self:
         """Reindex `.nodes`, also removes edges as necessary.
 
         See [pandas.DataFrame.reindex][] for more information on reindexing.
@@ -164,11 +194,12 @@ class NetworkFrame:
         """
         nodes = self.nodes.reindex(index=index, axis=0)
         edges = self.edges.query("(source in @nodes.index) & (target in @nodes.index)")
-        return NetworkFrame(nodes, edges, directed=self.directed)
+        out: NetworkFrame = self._return(nodes, edges, inplace=False)  # type: ignore
+        return out  # type: ignore
 
     def remove_nodes(
         self, nodes: Union[pd.DataFrame, Index], inplace=False
-    ) -> Optional["NetworkFrame"]:
+    ) -> Optional[Self]:
         """Remove nodes from the network and remove edges that are no longer valid.
 
         Parameters
@@ -187,16 +218,9 @@ class NetworkFrame:
         nodes = self.nodes.drop(index=nodes)
         # get the edges that are connected to the nodes that are left after the query
         edges = self.edges.query("(source in @nodes.index) & (target in @nodes.index)")
-        if inplace:
-            self.nodes = nodes
-            self.edges = edges
-            return None
-        else:
-            return NetworkFrame(nodes, edges, directed=self.directed)
+        return self._return(nodes, edges, inplace=inplace)
 
-    def remove_edges(
-        self, remove_edges: pd.DataFrame, inplace=False
-    ) -> Optional["NetworkFrame"]:
+    def remove_edges(self, remove_edges: pd.DataFrame, inplace=False) -> Optional[Self]:
         # """Remove edges from the network."""
         # TODO handle inplace better
 
@@ -208,33 +232,20 @@ class NetworkFrame:
 
         # TODO i think this destroys the old index?
         edges = self.edges.set_index(["source", "target"]).loc[new_index].reset_index()
-        if inplace:
-            self.edges = edges
-            return None
-        else:
-            return NetworkFrame(self.nodes, edges, directed=self.directed)
 
-    def add_nodes(
-        self, new_nodes: pd.DataFrame, inplace=False
-    ) -> Optional["NetworkFrame"]:
+        return self._return(self.nodes, edges, inplace=inplace)
+
+    def add_nodes(self, new_nodes: pd.DataFrame, inplace=False) -> Optional[Self]:
         # """Add nodes to the network."""
         nodes = pd.concat([self.nodes, new_nodes], copy=False, sort=False, axis=0)
-        if inplace:
-            self.nodes = nodes
-            return None
-        else:
-            return NetworkFrame(nodes, self.edges, directed=self.directed)
 
-    def add_edges(
-        self, new_edges: pd.DataFrame, inplace=False
-    ) -> Optional["NetworkFrame"]:
+        return self._return(nodes, self.edges, inplace=inplace)
+
+    def add_edges(self, new_edges: pd.DataFrame, inplace=False) -> Optional[Self]:
         # """Add edges to the network."""
         edges = pd.concat([self.edges, new_edges], copy=False, sort=False, axis=0)
-        if inplace:
-            self.edges = edges
-            return None
-        else:
-            return NetworkFrame(self.nodes, edges, directed=self.directed)
+
+        return self._return(self.nodes, edges, inplace=inplace)
 
     def query_nodes(
         self,
@@ -242,7 +253,8 @@ class NetworkFrame:
         inplace: bool = False,
         local_dict: Optional[dict] = None,
         global_dict: Optional[dict] = None,
-    ) -> Optional["NetworkFrame"]:
+        **kwargs,
+    ) -> Optional[Self]:
         """
         Select a subnetwork via a query the `.nodes` DataFrame.
 
@@ -261,6 +273,8 @@ class NetworkFrame:
             A dictionary of global variables. Useful for using the `@` expressions in
             [pandas.DataFrame.query][]. It may be useful to pass `global_dict=globals()`
             to accomplish this.
+        **kwargs
+            Additional keyword arguments to pass to [pandas.DataFrame.query][].
 
         Returns
         -------
@@ -290,15 +304,15 @@ class NetworkFrame:
         >>> sub_nf
         NetworkFrame(nodes=(2, 2), edges=(2, 3))
         """
-        nodes = self.nodes.query(expr, local_dict=local_dict, global_dict=global_dict)
+        nodes = self.nodes.query(
+            expr, local_dict=local_dict, global_dict=global_dict, **kwargs
+        )
         # get the edges that are connected to the nodes that are left after the query
-        edges = self.edges.query("(source in @nodes.index) & (target in @nodes.index)")
-        if inplace:
-            self.nodes = nodes
-            self.edges = edges
-            return None
-        else:
-            return NetworkFrame(nodes, edges, directed=self.directed)
+        edges = self.edges.query(
+            "(source in @nodes.index) & (target in @nodes.index)", **kwargs
+        )
+
+        return self._return(nodes, edges, inplace=inplace)
 
     def query_edges(
         self,
@@ -306,7 +320,8 @@ class NetworkFrame:
         inplace: bool = False,
         local_dict: Optional[dict] = None,
         global_dict: Optional[dict] = None,
-    ) -> Optional["NetworkFrame"]:
+        **kwargs,
+    ) -> Optional[Self]:
         """
         Select a subnetwork via a query the `.edges` DataFrame.
 
@@ -325,6 +340,8 @@ class NetworkFrame:
             A dictionary of global variables. Useful for using the `@` expressions in
             [pandas.DataFrame.query][]. It may be useful to pass `global_dict=globals()`
             to accomplish this.
+        **kwargs
+            Additional keyword arguments to pass to [pandas.DataFrame.query][].
 
         Returns
         -------
@@ -355,14 +372,13 @@ class NetworkFrame:
         NetworkFrame(nodes=(5, 2), edges=(3, 3))
 
         """
-        edges = self.edges.query(expr, local_dict=local_dict, global_dict=global_dict)
-        if inplace:
-            self.edges = edges
-            return None
-        else:
-            return NetworkFrame(self.nodes, edges, directed=self.directed)
+        edges = self.edges.query(
+            expr, local_dict=local_dict, global_dict=global_dict, **kwargs
+        )
 
-    def remove_unused_nodes(self, inplace: bool = False) -> Optional["NetworkFrame"]:
+        return self._return(self.nodes, edges, inplace=inplace)
+
+    def remove_unused_nodes(self, inplace: bool = False) -> Optional[Self]:
         """
         Remove nodes that are not connected to any edges.
 
@@ -406,15 +422,12 @@ class NetworkFrame:
         target_index = index.intersection(self.edges.target)
         new_index = source_index.union(target_index)
         nodes = self.nodes.loc[new_index]
-        if inplace:
-            self.nodes = nodes
-            return None
-        else:
-            return NetworkFrame(nodes, self.edges, directed=self.directed)
+
+        return self._return(nodes, self.edges, inplace=inplace)
 
     def apply_node_features(
         self, columns: ColumnsType, axis: EdgeAxisType = "both", inplace: bool = False
-    ) -> Optional["NetworkFrame"]:
+    ) -> Optional[Self]:
         """
         Apply features from `.nodes` to `.edges`.
 
@@ -452,11 +465,7 @@ class NetworkFrame:
         if axis in ["target", "both"]:
             for col in columns:
                 edges[f"target_{col}"] = self.edges["target"].map(self.nodes[col])
-        if inplace:
-            self.edges = edges
-            return None
-        else:
-            return NetworkFrame(self.nodes, edges, directed=self.directed)
+        return self._return(self.nodes, edges, inplace=inplace)
 
     def to_adjacency(
         self, weight_col: str = "weight", aggfunc: Union[str, Callable] = "sum"
@@ -633,7 +642,7 @@ class NetworkFrame:
 
     def largest_connected_component(
         self, inplace: bool = False, verbose: bool = False
-    ) -> Optional["NetworkFrame"]:
+    ) -> Optional[Self]:
         """
         Find the largest [connected component](https://en.wikipedia.org/wiki/Component_(graph_theory))
         of the network.
@@ -665,12 +674,7 @@ class NetworkFrame:
         nodes = self.nodes.iloc[mask]
         edges = self.edges.query("(source in @nodes.index) & (target in @nodes.index)")
 
-        if inplace:
-            self.nodes = nodes
-            self.edges = edges
-            return None
-        else:
-            return NetworkFrame(nodes, edges, directed=self.directed)
+        return self._return(nodes, edges, inplace=inplace)
 
     def connected_components(self) -> Iterator["NetworkFrame"]:
         """
@@ -715,16 +719,18 @@ class NetworkFrame:
 
     def label_nodes_by_component(
         self, name: str = "component", inplace: bool = False
-    ) -> Optional["NetworkFrame"]:
+    ) -> Optional[Self]:
         """
         Add a column to `.nodes` labeling which connected component they are in.
+
 
         Parameters
         ----------
         name
             The name of the column to add to `.nodes`.
         inplace
-            Whether to modify the `NetworkFrame` rather than returning a new one.
+            Whether to modify the `NetworkFrame` rather than returning a new one. Copies
+            the nodes dataframe if `inplace=False`.
 
         Returns
         -------
@@ -735,18 +741,18 @@ class NetworkFrame:
         _, labels = self._get_component_indices()
 
         if inplace:
-            self.nodes[name] = labels
-            self.nodes[name] = self.nodes[name].astype("Int64")
-            return None
+            nodes = self.nodes
         else:
             nodes = self.nodes.copy()
-            nodes[name] = labels
-            nodes[name] = nodes[name].astype("Int64")
-            return NetworkFrame(nodes, self.edges, directed=self.directed)
+
+        nodes[name] = labels
+        nodes[name] = nodes[name].astype(int)
+
+        return self._return(nodes, self.edges, inplace=inplace)
 
     def select_component_from_node(
         self, node_id: Any, directed=True, inplace=False
-    ) -> Optional["NetworkFrame"]:
+    ) -> Optional[Self]:
         """
         Select the connected component containing the given node.
 
@@ -1045,6 +1051,7 @@ class LocIndexer:
                 nodes,
                 edges,
                 directed=self._frame.directed,
+                validate=False,
             )
         else:
             nodes = pd.concat([source_nodes, target_nodes], copy=False, sort=False)
@@ -1055,4 +1062,5 @@ class LocIndexer:
                 directed=self._frame.directed,
                 sources=row_index,
                 targets=col_index,
+                validate=False,
             )
