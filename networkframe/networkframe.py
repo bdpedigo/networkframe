@@ -968,14 +968,13 @@ class NetworkFrame:
         """
         return not self.__eq__(other)
 
-    # TODO make this docstring use automatic cross-reference to pandas docs
     def to_dict(self, orient: str = "dict") -> dict:
         """Return a dictionary representation of the NetworkFrame.
 
         Parameters
         ----------
         orient
-            The format of the dictionary according to [pandas.DataFrame.to_dict].
+            The format of the dictionary according to [pandas.DataFrame.to_dict][].
 
         Returns
         -------
