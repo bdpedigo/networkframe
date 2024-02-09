@@ -949,13 +949,22 @@ class NetworkFrame:
         edges1 = self.edges
         edges2 = other.edges
         if not nodes1.sort_index().equals(nodes2.sort_index()):
+            print("diff nodes")
             return False
-        if (
-            not edges1.sort_values(["source", "target"])
-            .reset_index(drop=True)
-            .equals(edges2.sort_values(["source", "target"]).reset_index(drop=True))
-        ):
+
+        index1 = edges1.index.sort_values()
+        index2 = edges2.index.sort_values()
+        if not index1.equals(index2):
+            print("diff index")
             return False
+
+        # sort the edges the same way (note the index1 twice)
+        edges1 = edges1.loc[index1]
+        edges2 = edges2.loc[index1]
+        if not edges1.equals(edges2):
+            print("diff edges")
+            return False
+
         return True
 
     def __ne__(self, other: object) -> bool:
@@ -1036,6 +1045,22 @@ class NetworkFrame:
             edges,
             directed=d["directed"],
         )
+
+    def node_agreement(self, other: Self) -> float:
+        """
+        Return the fraction of nodes in self that are also in other.
+
+        Parameters
+        ----------
+        other
+            The other NetworkFrame to compare to.
+
+        Returns
+        -------
+        :
+            The fraction of nodes that are shared between the two NetworkFrames.
+        """
+        return self.nodes.index.isin(other.nodes.index).mean()
 
 
 class LocIndexer:
