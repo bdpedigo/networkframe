@@ -824,7 +824,7 @@ class NetworkFrame:
         )
 
     def groupby_nodes(
-        self, by: Union[Any, list], axis: EdgeAxisType = "both", **kwargs
+        self, by: Union[Any, list], axis: EdgeAxisType = "both", induced=False, **kwargs
     ) -> "NodeGroupBy":
         """Group the frame by node data for the source or target (or both).
 
@@ -837,6 +837,9 @@ class NetworkFrame:
         axis
             Whether to group by the source nodes (`source` or `0`), target nodes
             (`target` or `0`), or both (`both`).
+        induced
+            Whether to only yield groups over induced subgraphs, as opposed to all
+            subgraphs.
         kwargs
             Additional keyword arguments to pass to [pandas.DataFrame.groupby][].
 
@@ -891,7 +894,9 @@ class NetworkFrame:
         else:
             raise ValueError("Axis must be 0 or 1 or 'both'")
 
-        return NodeGroupBy(self, source_nodes_groupby, target_nodes_groupby)
+        return NodeGroupBy(
+            self, source_nodes_groupby, target_nodes_groupby, induced=induced
+        )
 
     @property
     def loc(self) -> "LocIndexer":
@@ -949,20 +954,17 @@ class NetworkFrame:
         edges1 = self.edges
         edges2 = other.edges
         if not nodes1.sort_index().equals(nodes2.sort_index()):
-            print("diff nodes")
             return False
 
         index1 = edges1.index.sort_values()
         index2 = edges2.index.sort_values()
         if not index1.equals(index2):
-            print("diff index")
             return False
 
         # sort the edges the same way (note the index1 twice)
         edges1 = edges1.loc[index1]
         edges2 = edges2.loc[index1]
         if not edges1.equals(edges2):
-            print("diff edges")
             return False
 
         return True
@@ -1102,20 +1104,22 @@ class LocIndexer:
 
         if row_index.equals(col_index):
             nodes = source_nodes
-            return NetworkFrame(
-                nodes,
-                edges,
-                directed=self._frame.directed,
-                validate=False,
-            )
+            return self._frame._return(nodes=nodes, edges=edges, inplace=False)
+            # return NetworkFrame(
+            #     nodes,
+            #     edges,
+            #     directed=self._frame.directed,
+            #     validate=False,
+            # )
         else:
             nodes = pd.concat([source_nodes, target_nodes], copy=False, sort=False)
             nodes = nodes.loc[~nodes.index.duplicated(keep="first")]
-            return NetworkFrame(
-                nodes,
-                edges,
-                directed=self._frame.directed,
-                sources=row_index,
-                targets=col_index,
-                validate=False,
-            )
+            return self._frame._return(nodes=nodes, edges=edges, inplace=False)
+            # return NetworkFrame(
+            #     nodes,
+            #     edges,
+            #     directed=self._frame.directed,
+            #     sources=row_index,
+            #     targets=col_index,
+            #     validate=False,
+            # )

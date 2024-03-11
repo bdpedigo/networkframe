@@ -1,21 +1,24 @@
 class NodeGroupBy:
     """A class for grouping a `NetworkFrame` by a set of labels."""
 
-    def __init__(self, frame, source_groupby, target_groupby):
+    def __init__(self, frame, source_groupby, target_groupby, induced: bool = False):
         """Groupby on nodes.
 
         Parameters
         ----------
-        frame : _type_
+        frame
             _description_
-        source_groupby : _type_
+        source_groupby
             _description_
-        target_groupby : _type_
+        target_groupby
+            _description_
+        induced
             _description_
         """
         self._frame = frame
         self._source_groupby = source_groupby
         self._target_groupby = target_groupby
+        self.induced = induced
 
         if source_groupby is None:
             self._axis = 1
@@ -28,6 +31,18 @@ class NodeGroupBy:
             self.source_group_names = list(source_groupby.groups.keys())
         if self.has_target_groups:
             self.target_group_names = list(target_groupby.groups.keys())
+
+    def __len__(self):
+        """Return the number of groups."""
+        if self._axis == "both":
+            if self.induced:
+                return len(self._source_groupby)
+            else:
+                return len(self._source_groupby) * len(self._target_groupby)
+        elif self._axis == 0:
+            return len(self._source_groupby)
+        elif self._axis == 1:
+            return len(self._target_groupby)
 
     @property
     def has_source_groups(self):
@@ -44,10 +59,13 @@ class NodeGroupBy:
         if self._axis == "both":
             for source_group, source_objects in self._source_groupby:
                 for target_group, target_objects in self._target_groupby:
-                    yield (
-                        (source_group, target_group),
-                        self._frame.loc[source_objects.index, target_objects.index],
-                    )
+                    if self.induced and source_group != target_group:
+                        continue
+                    else: 
+                        yield (
+                            (source_group, target_group),
+                            self._frame.loc[source_objects.index, target_objects.index],
+                        )
         elif self._axis == 0:
             for source_group, source_objects in self._source_groupby:
                 yield source_group, self._frame.loc[source_objects.index]
