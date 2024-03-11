@@ -502,6 +502,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#networkframe.NetworkFrame.k_hop_neighborhood" class="md-nav__link">
+    <span class="md-ellipsis">
+      k_hop_neighborhood()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#networkframe.NetworkFrame.label_nodes_by_component" class="md-nav__link">
     <span class="md-ellipsis">
       label_nodes_by_component()
@@ -879,6 +888,15 @@
   <a href="#networkframe.NetworkFrame.is_fully_connected" class="md-nav__link">
     <span class="md-ellipsis">
       is_fully_connected()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#networkframe.NetworkFrame.k_hop_neighborhood" class="md-nav__link">
+    <span class="md-ellipsis">
+      k_hop_neighborhood()
     </span>
   </a>
   
@@ -1953,6 +1971,123 @@ subgraphs.</p>
           <td class="doc-returns-details">
             <div class="doc-md-description">
               <p>Whether the network is fully connected.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h5 id="networkframe.NetworkFrame.k_hop_neighborhood" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">k_hop_neighborhood</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;power&#39;</span><span class="p">)</span></code>
+
+<a href="#networkframe.NetworkFrame.k_hop_neighborhood" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Return the k-hop neighborhood of a node.</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>PARAMETER</b></th>
+        <th><b> DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>node_id</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The node ID to use to select the k-hop neighborhood.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>k</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The number of hops to consider.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>directed</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>Whether to consider the network as directed for computing the reachable
+nodes.</p>
+            </div>
+            <p>
+                <span class="doc-param-annotation">
+                  <b>TYPE:</b>
+                    <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+                </span>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>False</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>method</code></td>
+          <td class="doc-param-details">
+            <div class="doc-md-description">
+              <p>The method to use to compute the k-hop neighborhood. Currently only "power" is
+supported. Dijkstra's algorithm may be supported in the future.</p>
+            </div>
+            <p>
+                <span class="doc-param-default">
+                  <b>DEFAULT:</b> 
+                    <code>&#39;power&#39;</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>RETURNS</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+          </td>
+          <td class="doc-returns-details">
+            <div class="doc-md-description">
+              <p>A new NetworkFrame with only the k-hop neighborhood of the given node.</p>
             </div>
           </td>
         </tr>
