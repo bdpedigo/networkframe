@@ -1,3 +1,5 @@
+from typing import Union
+
 class NodeGroupBy:
     """A class for grouping a `NetworkFrame` by a set of labels."""
 
@@ -20,6 +22,7 @@ class NodeGroupBy:
         self._target_groupby = target_groupby
         self.induced = induced
 
+        self._axis: Union[str, int]
         if source_groupby is None:
             self._axis = 1
         elif target_groupby is None:
