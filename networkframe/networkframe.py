@@ -1064,6 +1064,52 @@ class NetworkFrame:
         """
         return self.nodes.index.isin(other.nodes.index).mean()
 
+    def k_hop_neighborhood(
+        self, node_id: Union[int, str], k: int, directed: bool = False, method="power"
+    ):
+        """
+        Return the k-hop neighborhood of a node.
+
+        Parameters
+        ----------
+        node_id
+            The node ID to use to select the k-hop neighborhood.
+        k
+            The number of hops to consider.
+        directed
+            Whether to consider the network as directed for computing the reachable
+            nodes.
+        method
+            The method to use to compute the k-hop neighborhood. Currently only "power" is
+            supported. Dijkstra's algorithm may be supported in the future.
+
+        Returns
+        -------
+        :
+            A new NetworkFrame with only the k-hop neighborhood of the given node.
+        """
+        if k < 0:
+            raise ValueError("k must be non-negative.")
+        if k == 0:
+            return self.query_nodes("index == @node_id", local_dict=locals())
+
+        sparse_adjacency = self.to_sparse_adjacency()
+        if not directed:
+            sparse_adjacency = sparse_adjacency.maximum(sparse_adjacency.T)
+        sparse_adjacency = (sparse_adjacency > 0).astype(bool)
+        power_adjacency = sparse_adjacency
+        for _ in range(k - 1):
+            power_adjacency = power_adjacency @ sparse_adjacency
+        index = self.nodes.index.get_loc(node_id)
+        row_mask = power_adjacency[[index], :]
+        nonzero_indices = row_mask.nonzero()
+        targets = nonzero_indices[1]
+        select_indices = self.nodes.index[targets].to_list()
+        if node_id not in select_indices:
+            select_indices.append(node_id)
+        select_indices
+        return self.query_nodes("index in @select_indices", local_dict=locals())
+
 
 class LocIndexer:
     """A class for indexing a NetworkFrame using .loc."""

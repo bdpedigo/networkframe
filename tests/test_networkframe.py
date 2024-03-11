@@ -21,6 +21,7 @@ def simple_networkframe():
     )
     nodes.set_index("name", inplace=True)
 
+    # A -> B, A -> C, B -> C, C -> D
     edges = pd.DataFrame(
         {
             "source": ["A", "A", "B", "C"],
@@ -28,6 +29,7 @@ def simple_networkframe():
             "weight": [1, 2, 3, 4],
         }
     )
+    
 
     return NetworkFrame(nodes, edges)
 
@@ -63,3 +65,8 @@ def test_query_nodes(simple_networkframe):
 def test_query_edges(simple_networkframe):
     query_networkframe = simple_networkframe.query_edges("weight > 2")
     assert len(query_networkframe.edges) == 2
+
+def test_k_hop_neighborhood(simple_networkframe):
+    assert len(simple_networkframe.k_hop_neighborhood("A", 0)) == 1
+    assert len(simple_networkframe.k_hop_neighborhood("A", 1)) == 3
+    assert len(simple_networkframe.k_hop_neighborhood("A", 2)) == 4
