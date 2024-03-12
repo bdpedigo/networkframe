@@ -1211,7 +1211,9 @@ class NetworkFrame:
 
         from scipy.sparse.csgraph import dijkstra
 
-        dists = dijkstra(sparse_adjacency, directed=directed, indices=iloc, limit=k)
+        dists = dijkstra(
+            sparse_adjacency, directed=directed, indices=iloc, limit=k, unweighted=True
+        )
         mask = ~np.isinf(dists)
         select_indices = self.nodes.index[mask]
         select_indices
