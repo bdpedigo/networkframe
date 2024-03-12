@@ -25,6 +25,8 @@ NetworkFrameReturn = Union["NetworkFrame", None]
 
 Index = Union[pd.Index, pd.MultiIndex, np.ndarray, list]
 
+ConnectionType = Union[Literal["weak"], Literal["strong"]]
+
 
 class NetworkFrame:
     """Represent a network as a pair of DataFrames, one for nodes and one for edges."""
@@ -653,16 +655,24 @@ class NetworkFrame:
         )
         return adj
 
-    def _get_component_indices(self) -> tuple[int, np.ndarray]:
+    def _get_component_indices(
+        self, directed: bool = True, connection: ConnectionType = "weak"
+    ) -> tuple[int, np.ndarray]:
         """Helper function for connected_components."""
         from scipy.sparse.csgraph import connected_components
 
         adjacency = self.to_sparse_adjacency()
-        n_components, labels = connected_components(adjacency, directed=self.directed)
+        n_components, labels = connected_components(
+            adjacency, directed=directed, connection=connection
+        )
         return n_components, labels
 
     def largest_connected_component(
-        self, inplace: bool = False, verbose: bool = False
+        self,
+        directed: bool = True,
+        connection: ConnectionType = "weak",
+        inplace: bool = False,
+        verbose: bool = False,
     ) -> Optional[Self]:
         """
         Find the largest [connected component](https://en.wikipedia.org/wiki/Component_(graph_theory))
@@ -670,12 +680,23 @@ class NetworkFrame:
 
         Parameters
         ----------
+        directed
+            If True (default), then operate on a directed graph: only move from point
+            `i` to point `j` along edges from `i` to `j`. If False, then compute
+            components on an undirected graph: the algorithm will tread edges from
+            `i` to `j` and from `j` to `i` the same.
+        connection
+            ['weak'|'strong']. For directed graphs, the type of connection to use.
+            Nodes `i` and `j` are strongly connected if a path exists both from `i` to
+            `j` and from `j` to `i`. A directed graph is weakly connected if replacing
+            all of its directed edges with undirected edges produces a connected
+            (undirected) graph. If directed == False, this keyword is not referenced.
         inplace
             Whether to modify the `NetworkFrame` to select only the largest connected
             component, rather than returning a new one.
         verbose
-            Whether to print the number of nodes removed when taking the largest connected
-            component.
+            Whether to print the number of nodes removed when taking the largest
+            connected component.
 
         Returns
         -------
@@ -683,7 +704,9 @@ class NetworkFrame:
             A new NetworkFrame with only the largest connected component. If
             `inplace=True`, returns `None`.
         """
-        _, labels = self._get_component_indices()
+        _, labels = self._get_component_indices(
+            directed=directed, connection=connection
+        )
         label_counts = pd.Series(labels).value_counts()
         biggest_label = label_counts.idxmax()
         mask = labels == biggest_label
@@ -697,49 +720,108 @@ class NetworkFrame:
 
         return self._return(nodes=nodes, edges=edges, inplace=inplace)
 
-    def connected_components(self) -> Iterator["NetworkFrame"]:
+    def connected_components(
+        self, directed: bool = True, connection: ConnectionType = "weak"
+    ) -> Iterator["NetworkFrame"]:
         """
         Iterate over the [connected components](https://en.wikipedia.org/wiki/Component_(graph_theory))
         of the network.
+
+
+        Parameters
+        ----------
+        directed
+            If True (default), then operate on a directed graph: only move from point
+            `i` to point `j` along edges from `i` to `j`. If False, then compute
+            components on an undirected graph: the algorithm will tread edges from
+            `i` to `j` and from `j` to `i` the same.
+        connection
+            ['weak'|'strong']. For directed graphs, the type of connection to use.
+            Nodes `i` and `j` are strongly connected if a path exists both from `i` to
+            `j` and from `j` to `i`. A directed graph is weakly connected if replacing
+            all of its directed edges with undirected edges produces a connected
+            (undirected) graph. If directed == False, this keyword is not referenced.
 
         Yields
         ------
         :
             A new NetworkFrame for each connected component.
         """
-        n_components, labels = self._get_component_indices()
+        n_components, labels = self._get_component_indices(
+            directed=directed, connection=connection
+        )
         index = self.nodes.index
 
         for i in range(n_components):
             this_index = index[labels == i]
             yield self.loc[this_index, this_index]
 
-    def n_connected_components(self) -> int:
+    def n_connected_components(
+        self, directed: bool = True, connection: ConnectionType = "weak"
+    ) -> int:
         """
         Return the number of [connected components](https://en.wikipedia.org/wiki/Component_(graph_theory))
         of the network.
+
+        Parameters
+        ----------
+        directed
+            If True (default), then operate on a directed graph: only move from point
+            `i` to point `j` along edges from `i` to `j`. If False, then compute
+            components on an undirected graph: the algorithm will tread edges from
+            `i` to `j` and from `j` to `i` the same.
+        connection
+            ['weak'|'strong']. For directed graphs, the type of connection to use.
+            Nodes `i` and `j` are strongly connected if a path exists both from `i` to
+            `j` and from `j` to `i`. A directed graph is weakly connected if replacing
+            all of its directed edges with undirected edges produces a connected
+            (undirected) graph. If directed == False, this keyword is not referenced.
 
         Returns
         -------
         :
             The number of connected components.
         """
-        n_components, _ = self._get_component_indices()
+        n_components, _ = self._get_component_indices(
+            directed=directed, connection=connection
+        )
         return n_components
 
-    def is_fully_connected(self) -> bool:
+    def is_fully_connected(
+        self, directed: bool = True, connection: ConnectionType = "weak"
+    ) -> bool:
         """
         Return whether the network is fully connected.
+
+        Parameters
+        ----------
+        directed
+            If True (default), then operate on a directed graph: only move from point
+            `i` to point `j` along edges from `i` to `j`. If False, then compute
+            components on an undirected graph: the algorithm will tread edges from
+            `i` to `j` and from `j` to `i` the same.
+        connection
+            ['weak'|'strong']. For directed graphs, the type of connection to use.
+            Nodes `i` and `j` are strongly connected if a path exists both from `i` to
+            `j` and from `j` to `i`. A directed graph is weakly connected if replacing
+            all of its directed edges with undirected edges produces a connected
+            (undirected) graph. If directed == False, this keyword is not referenced.
 
         Returns
         -------
         :
             Whether the network is fully connected.
         """
-        return self.n_connected_components() == 1
+        return (
+            self.n_connected_components(directed=directed, connection=connection) == 1
+        )
 
     def label_nodes_by_component(
-        self, name: str = "component", inplace: bool = False
+        self,
+        name: str = "component",
+        inplace: bool = False,
+        directed: bool = True,
+        connection: ConnectionType = "weak",
     ) -> Optional[Self]:
         """
         Add a column to `.nodes` labeling which connected component they are in.
@@ -747,6 +829,17 @@ class NetworkFrame:
 
         Parameters
         ----------
+        directed
+            If True (default), then operate on a directed graph: only move from point
+            `i` to point `j` along edges from `i` to `j`. If False, then compute
+            components on an undirected graph: the algorithm will tread edges from
+            `i` to `j` and from `j` to `i` the same.
+        connection
+            ['weak'|'strong']. For directed graphs, the type of connection to use.
+            Nodes `i` and `j` are strongly connected if a path exists both from `i` to
+            `j` and from `j` to `i`. A directed graph is weakly connected if replacing
+            all of its directed edges with undirected edges produces a connected
+            (undirected) graph. If directed == False, this keyword is not referenced.
         name
             The name of the column to add to `.nodes`.
         inplace
@@ -759,7 +852,9 @@ class NetworkFrame:
             A new NetworkFrame with the component labels added to `.nodes`. If
             `inplace=True`, returns `None`.
         """
-        _, labels = self._get_component_indices()
+        _, labels = self._get_component_indices(
+            directed=directed, connection=connection
+        )
 
         if inplace:
             nodes = self.nodes
@@ -771,8 +866,24 @@ class NetworkFrame:
 
         return self._return(nodes=nodes, inplace=inplace)
 
-    def component_labels(self) -> pd.Series:
+    def component_labels(
+        self, directed: bool = True, connection: str = "weak"
+    ) -> pd.Series:
         """Return the indices of the connected components.
+
+        Parameters
+        ----------
+        directed
+            If True (default), then operate on a directed graph: only move from point
+            `i` to point `j` along edges from `i` to `j`. If False, then compute
+            components on an undirected graph: the algorithm will tread edges from
+            `i` to `j` and from `j` to `i` the same.
+        connection
+            ['weak'|'strong']. For directed graphs, the type of connection to use.
+            Nodes `i` and `j` are strongly connected if a path exists both from `i` to
+            `j` and from `j` to `i`. A directed graph is weakly connected if replacing
+            all of its directed edges with undirected edges produces a connected
+            (undirected) graph. If directed == False, this keyword is not referenced.
 
         Returns
         -------
@@ -780,7 +891,9 @@ class NetworkFrame:
             A series of the same length as the number of nodes, where each element
             corresponds to the connected component of the node at that index.
         """
-        _, labels = self._get_component_indices()
+        _, labels = self._get_component_indices(
+            directed=directed, connection=connection
+        )
         labels = pd.Series(labels, index=self.nodes.index)
         return labels
 
@@ -1065,7 +1178,10 @@ class NetworkFrame:
         return self.nodes.index.isin(other.nodes.index).mean()
 
     def k_hop_neighborhood(
-        self, node_id: Union[int, str], k: int, directed: bool = False, method="power"
+        self,
+        node_id: Union[int, str],
+        k: int,
+        directed: bool = False,
     ):
         """
         Return the k-hop neighborhood of a node.
@@ -1079,9 +1195,6 @@ class NetworkFrame:
         directed
             Whether to consider the network as directed for computing the reachable
             nodes.
-        method
-            The method to use to compute the k-hop neighborhood. Currently only "power" is
-            supported. Dijkstra's algorithm may be supported in the future.
 
         Returns
         -------
@@ -1094,19 +1207,13 @@ class NetworkFrame:
             return self.query_nodes("index == @node_id", local_dict=locals())
 
         sparse_adjacency = self.to_sparse_adjacency()
-        if not directed:
-            sparse_adjacency = sparse_adjacency.maximum(sparse_adjacency.T)
-        sparse_adjacency = (sparse_adjacency > 0).astype(bool)
-        power_adjacency = sparse_adjacency
-        for _ in range(k - 1):
-            power_adjacency = power_adjacency @ sparse_adjacency
-        index = self.nodes.index.get_loc(node_id)
-        row_mask = power_adjacency[[index], :]
-        nonzero_indices = row_mask.nonzero()
-        targets = nonzero_indices[1]
-        select_indices = self.nodes.index[targets].to_list()
-        if node_id not in select_indices:
-            select_indices.append(node_id)
+        iloc = self.nodes.index.get_loc(node_id)
+
+        from scipy.sparse.csgraph import dijkstra
+
+        dists = dijkstra(sparse_adjacency, directed=directed, indices=iloc, limit=k)
+        mask = ~np.isinf(dists)
+        select_indices = self.nodes.index[mask]
         select_indices
         return self.query_nodes("index in @select_indices", local_dict=locals())
 
