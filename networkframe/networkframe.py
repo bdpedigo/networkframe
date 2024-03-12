@@ -1203,8 +1203,6 @@ class NetworkFrame:
         """
         if k < 0:
             raise ValueError("k must be non-negative.")
-        if k == 0:
-            return self.query_nodes("index == @node_id", local_dict=locals())
 
         sparse_adjacency = self.to_sparse_adjacency()
         iloc = self.nodes.index.get_loc(node_id)
