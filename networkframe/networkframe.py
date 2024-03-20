@@ -1008,7 +1008,7 @@ class NetworkFrame:
             raise ValueError("Axis must be 0 or 1 or 'both'")
 
         return NodeGroupBy(
-            self, source_nodes_groupby, target_nodes_groupby, induced=induced
+            self, source_nodes_groupby, target_nodes_groupby, induced=induced, by=by
         )
 
     @property
@@ -1216,6 +1216,33 @@ class NetworkFrame:
         select_indices = self.nodes.index[mask]
         select_indices
         return self.query_nodes("index in @select_indices", local_dict=locals())
+
+    def condense(
+        self,
+        by: Union[Any, list],
+        func: Union[
+            Callable, Literal["mean", "sum", "max", "min", "any", "size"]
+        ] = "size",
+        weight_name="weight",
+        columns=None,
+    ) -> "NetworkFrame":
+        """Apply a function, and create a new NetworkFrame such that the nodes of the
+        new frame are the groups and the edges are the result of the function.
+
+        The API and implementation of this function is rather fragile and subject to
+        change.
+        """
+
+        edges = self.groupby_nodes(by).apply_edges(func, columns=columns)
+        edges.name = weight_name
+        edges = edges.reset_index()
+        edges = edges.rename(
+            columns={f"source_{by}": "source", f"target_{by}": "target"}
+        )
+        nodes_index = pd.Index(self.nodes[by].unique())
+        nodes_index.name = by
+        nodes = pd.DataFrame(index=nodes_index)
+        return self.__class__(nodes, edges, directed=self.directed)
 
 
 class LocIndexer:

@@ -1,9 +1,12 @@
-from typing import Union
+from typing import Callable, Literal, Union
+
 
 class NodeGroupBy:
     """A class for grouping a `NetworkFrame` by a set of labels."""
 
-    def __init__(self, frame, source_groupby, target_groupby, induced: bool = False):
+    def __init__(
+        self, frame, source_groupby, target_groupby, by, induced: bool = False
+    ):
         """Groupby on nodes.
 
         Parameters
@@ -21,6 +24,7 @@ class NodeGroupBy:
         self._source_groupby = source_groupby
         self._target_groupby = target_groupby
         self.induced = induced
+        self.by = by
 
         self._axis: Union[str, int]
         if source_groupby is None:
@@ -64,7 +68,7 @@ class NodeGroupBy:
                 for target_group, target_objects in self._target_groupby:
                     if self.induced and source_group != target_group:
                         continue
-                    else: 
+                    else:
                         yield (
                             (source_group, target_group),
                             self._frame.loc[source_objects.index, target_objects.index],
@@ -76,23 +80,62 @@ class NodeGroupBy:
             for target_group, target_objects in self._target_groupby:
                 yield target_group, self._frame.loc[:, target_objects.index]
 
-    # def apply(self, func, *args, data=False, **kwargs):
+    def apply_nodes(self, func):
+        pass
+
+    def apply_edges(self, func, columns=None):
+        by = self.by
+        if isinstance(by, list):
+            raise ValueError(
+                "Currently can only apply edges to a single group in `by`."
+            )
+        if self._axis != "both":
+            raise ValueError("Currently can only apply edges when groupby is 'both'.")
+
+        if isinstance(func, str):
+            if func == "size":
+                func = lambda x: x.shape[0]
+            elif func == "mean":
+                func = lambda x: x.mean()
+            elif func == "sum":
+                func = lambda x: x.sum()
+            elif func == "max":
+                func = lambda x: x.max()
+            elif func == "min":
+                func = lambda x: x.min()
+            elif func == "any":
+                func = lambda x: x.any()
+
+        edges = self._frame.apply_node_features(by, inplace=False).edges
+
+        edge_by = [f"source_{by}", f"target_{by}"]
+        if columns is not None:
+            out = edges.groupby(edge_by)[columns].apply(func)
+        else:
+            out = edges.groupby(edge_by).apply(func)
+        return out
+
+    def size_edges(self):
+        return self.apply_edges("size")
+
+    # def apply(self, func, to="frame"):
     #     """Apply a function to each group."""
-    #     if self._axis == 'both':
+    #     if self._axis == "both":
     #         answer = pd.DataFrame(
     #             index=self.source_group_names, columns=self.target_group_names
     #         )
-
     #     else:
     #         if self._axis == 0:
     #             answer = pd.Series(index=self.source_group_names)
     #         else:
     #             answer = pd.Series(index=self.target_group_names)
-    #     for group, frame in self:
-    #         if data:
-    #             value = func(frame.data, *args, **kwargs)
-    #         else:
-    #             value = func(frame, *args, **kwargs)
+    #     for group, frame in tqdm(self, total=len(self)):
+    #         if to == "frame":
+    #             value = func(frame)
+    #         elif to == "nodes":
+    #             value = func(frame.nodes)
+    #         elif to == "edges":
+    #             value = func(frame.edges)
     #         answer.at[group] = value
     #     return answer
 
