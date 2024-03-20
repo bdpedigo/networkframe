@@ -1244,6 +1244,22 @@ class NetworkFrame:
         nodes = pd.DataFrame(index=nodes_index)
         return self.__class__(nodes, edges, directed=self.directed)
 
+    def sort_spectral(self, weight_col="weight", inplace=False) -> "NetworkFrame":
+        adjacency = self.to_sparse_adjacency(weight_col=weight_col)
+        adjacency = adjacency + adjacency.T
+        adjacency = adjacency.astype(float)
+
+        # from scipy.sparse.linalg import svds
+        # u, s, vh = svds(adjacency, k=1)
+
+        from scipy.sparse.linalg import eigsh
+
+        _, u = eigsh(adjacency, k=1, which="LM", return_eigenvectors=True)
+
+        nodes = self.nodes.iloc[np.argsort(u[:, 0])]
+
+        return self._return(nodes=nodes, inplace=inplace)
+
 
 class LocIndexer:
     """A class for indexing a NetworkFrame using .loc."""
