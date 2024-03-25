@@ -192,6 +192,9 @@ class NetworkFrame:
             The number of nodes in the network.
         """
         return len(self.nodes)
+    
+    def deepcopy(self):
+        return copy.deepcopy(self)
 
     def reindex_nodes(self, index: pd.Index) -> Self:
         """Reindex `.nodes`, also removes edges as necessary.
