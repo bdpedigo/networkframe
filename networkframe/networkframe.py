@@ -192,7 +192,7 @@ class NetworkFrame:
             The number of nodes in the network.
         """
         return len(self.nodes)
-    
+
     def deepcopy(self):
         return copy.deepcopy(self)
 
@@ -1219,6 +1219,35 @@ class NetworkFrame:
         select_indices = self.nodes.index[mask]
         select_indices
         return self.query_nodes("index in @select_indices", local_dict=locals())
+
+    def k_hop_decomposition(self, k: int, directed: bool = False) -> pd.Series:
+        """
+        Return the k-hop decomposition of the network.
+
+        This function returns a series of NetworkFrames, each representing the k-hop
+        neighborhood of a node.
+
+        Parameters
+        ----------
+        k
+            The number of hops to consider.
+        """
+        if k < 0:
+            raise ValueError("k must be non-negative.")
+
+        sparse_adjacency = self.to_sparse_adjacency()
+
+        from scipy.sparse.csgraph import dijkstra
+
+        dists = dijkstra(sparse_adjacency, directed=directed, limit=k, unweighted=True)
+        mask = ~np.isinf(dists)
+
+        out = {}
+        for iloc in range(len(self.nodes)):
+            select_indices = self.nodes.index[mask[iloc]]
+            sub_nf = self.query_nodes("index in @select_indices", local_dict=locals())
+            out[self.nodes.index[iloc]] = sub_nf
+        return pd.Series(out)
 
     def condense(
         self,

@@ -80,8 +80,13 @@ class NodeGroupBy:
             for target_group, target_objects in self._target_groupby:
                 yield target_group, self._frame.loc[:, target_objects.index]
 
-    def apply_nodes(self, func):
-        pass
+    # def apply_nodes(self, func):
+    #     nodes = self._frame.nodes
+
+        # if isinstance(func, str):
+        #     if func == 'n_possible':
+
+
 
     def apply_edges(self, func, columns=None):
         by = self.by
