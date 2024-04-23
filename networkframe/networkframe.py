@@ -1332,11 +1332,10 @@ class NetworkFrame:
                 rows.append(agg_neighbor_features)
             neighborhood_features = pd.concat(rows, axis=1).T
         elif engine == "scipy":
-            # ensure that only "mean" and "sum" are allowed in aggregations
-            # TODO add more aggregations here
             if not all([x in ["mean", "sum", "std"] for x in aggregations]):
                 raise ValueError(
-                    "Currently only 'mean' and 'sum' are allowed in `aggregations`"
+                    "Currently only 'mean', 'sum', and 'std' are allowed in "
+                    "`aggregations` "
                     "when using the 'scipy' engine."
                 )
 
@@ -1391,6 +1390,8 @@ class NetworkFrame:
                 # squared sum of the shifted data, divided by the number of non-NaNs
                 second_term = (mask @ inner_term) ** 2 / divisor_matrix
 
+                # this is a node by feature matrix of the variances for each feature
+                # in that node's neighborhood
                 variances = (first_term - second_term) / (divisor_matrix - 1)
                 variances[variances < 0] = 0
 
