@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from beartype import beartype
 from scipy.sparse import csr_array
+from tqdm.autonotebook import tqdm
 
 from .groupby import NodeGroupBy
 
@@ -1220,7 +1221,9 @@ class NetworkFrame:
         select_indices
         return self.query_nodes("index in @select_indices", local_dict=locals())
 
-    def k_hop_decomposition(self, k: int, directed: bool = False) -> pd.Series:
+    def k_hop_decomposition(
+        self, k: int, directed: bool = False, verbose=False
+    ) -> pd.Series:
         """
         Return the k-hop decomposition of the network.
 
@@ -1239,15 +1242,178 @@ class NetworkFrame:
 
         from scipy.sparse.csgraph import dijkstra
 
+        # TODO add a check for interaction of directed and whether the graph has any
+        # bi-directional edges
         dists = dijkstra(sparse_adjacency, directed=directed, limit=k, unweighted=True)
         mask = ~np.isinf(dists)
 
         out = {}
-        for iloc in range(len(self.nodes)):
+        for iloc in tqdm(range(len(self.nodes)), disable=not verbose):
             select_indices = self.nodes.index[mask[iloc]]
             sub_nf = self.query_nodes("index in @select_indices", local_dict=locals())
             out[self.nodes.index[iloc]] = sub_nf
         return pd.Series(out)
+
+    def k_hop_aggregation(
+        self,
+        k: int,
+        aggregations: Union[str, list] = "mean",
+        directed: bool = False,
+        drop_self_in_neighborhood=True,
+        drop_non_numeric=True,
+        n_jobs=-1,
+        verbose=False,
+        engine="pandas",
+    ):
+        if k < 0:
+            raise ValueError("k must be non-negative.")
+
+        if isinstance(aggregations, str):
+            aggregations = [aggregations]
+
+        nodes = self.nodes
+        if drop_non_numeric:
+            nodes = nodes.select_dtypes(include=[np.number])
+
+        sparse_adjacency = self.to_sparse_adjacency()
+
+        from scipy.sparse.csgraph import dijkstra
+
+        # TODO add a check for interaction of directed and whether the graph has any
+        # bi-directional edges
+        dists = dijkstra(sparse_adjacency, directed=directed, limit=k, unweighted=True)
+        mask = ~np.isinf(dists)
+
+        # def _agg_neighborhood(iloc):
+        #     node = self.nodes.index[iloc]
+        #     select_nodes = self.nodes.loc[mask[iloc]]
+        #     if drop_self_in_neighborhood:
+        #         select_nodes = select_nodes.drop(index=node)
+        #     agg_neighbor_features = select_nodes.agg(aggregations)
+        #     if isinstance(agg_neighbor_features, pd.Series):
+        #         agg_neighbor_features.index = agg_neighbor_features.index.map(
+        #             lambda x: f"{x}_neighbor_{aggregations[0]}"
+        #         )
+        #     elif isinstance(agg_neighbor_features, pd.DataFrame):
+        #         agg_neighbor_features = agg_neighbor_features.unstack()
+        #         agg_neighbor_features.index = agg_neighbor_features.index.map(
+        #             lambda x: f"{x[0]}_neighbor_{x[1]}"
+        #         )
+        #     agg_neighbor_features.name = node
+        #     return agg_neighbor_features
+
+        # with tqdm_joblib(total=len(self.nodes)) as progress_bar:
+        #     rows = Parallel(n_jobs=n_jobs)(
+        #         delayed(_agg_neighborhood)(iloc) for iloc in range(len(self.nodes))
+        #     )
+
+        if engine == "pandas":
+            rows = []
+            for iloc in tqdm(range(len(self.nodes)), disable=not verbose):
+                # the selection here is pretty quick;
+                node = self.nodes.index[iloc]
+                select_nodes = self.nodes.loc[mask[iloc]]
+                if drop_self_in_neighborhood:
+                    select_nodes = select_nodes.drop(index=node)
+
+                # the aggregation takes most of the time
+                agg_neighbor_features = select_nodes.agg(aggregations)
+
+                if isinstance(agg_neighbor_features, pd.Series):
+                    agg_neighbor_features.index = agg_neighbor_features.index.map(
+                        lambda x: f"{x}_neighbor_{aggregations[0]}"
+                    )
+                elif isinstance(agg_neighbor_features, pd.DataFrame):
+                    agg_neighbor_features = agg_neighbor_features.unstack()
+                    agg_neighbor_features.index = agg_neighbor_features.index.map(
+                        lambda x: f"{x[0]}_neighbor_{x[1]}"
+                    )
+                agg_neighbor_features.name = node
+                rows.append(agg_neighbor_features)
+            neighborhood_features = pd.concat(rows, axis=1).T
+        elif engine == "scipy":
+            # ensure that only "mean" and "sum" are allowed in aggregations
+            # TODO add more aggregations here
+            if not all([x in ["mean", "sum", "std"] for x in aggregations]):
+                raise ValueError(
+                    "Currently only 'mean' and 'sum' are allowed in `aggregations`"
+                    "when using the 'scipy' engine."
+                )
+
+            if drop_self_in_neighborhood:
+                mask[np.diag_indices_from(mask)] = False
+
+            # this is an adjacency matrix for whether nodes are in neighborhood
+            mask = csr_array(mask)
+
+            feature_mat = nodes.fillna(0).values
+
+            neighborhood_sum_mat = mask @ feature_mat
+
+            if "mean" in aggregations:
+                # this sums the number of notna values in the neighborhood for each
+                # feature
+                divisor_matrix = mask @ nodes.notna().astype(int)
+                divisor_matrix[divisor_matrix == 0] = 1
+
+                neighborhood_mean_matrix = neighborhood_sum_mat / divisor_matrix
+                neighborhood_mean_matrix = pd.DataFrame(
+                    neighborhood_mean_matrix, index=nodes.index, columns=nodes.columns
+                )
+                neighborhood_mean_matrix.rename(
+                    columns=lambda x: f"{x}_neighbor_mean", inplace=True
+                )
+
+            if "sum" in aggregations:
+                neighborhood_sum_matrix = pd.DataFrame(
+                    neighborhood_sum_mat, index=nodes.index, columns=nodes.columns
+                )
+                neighborhood_sum_matrix.rename(
+                    columns=lambda x: f"{x}_neighbor_sum", inplace=True
+                )
+
+            if "std" in aggregations:
+                # REF: https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+                # using "Computing shifted data" method
+
+                # supposedly, this subtraction helps with numerical stability
+                # I think it makes the large values closer to correct, but the small
+                # values worse (at least with many 0s)
+                # could play with details here
+                const = feature_mat.mean(axis=0)
+                inner_term = feature_mat - const[None, :]
+
+                # this is to deal with NaNs (which were previously set to 0)
+                inner_term[nodes.isna().values] = 0
+
+                # sum of squares of the shifted data
+                first_term = mask @ (inner_term**2)
+                # squared sum of the shifted data, divided by the number of non-NaNs
+                second_term = (mask @ inner_term) ** 2 / divisor_matrix
+
+                variances = (first_term - second_term) / (divisor_matrix - 1)
+                variances[variances < 0] = 0
+
+                neighborhood_std_matrix = np.sqrt(variances)
+                neighborhood_std_matrix = pd.DataFrame(
+                    neighborhood_std_matrix, index=nodes.index, columns=nodes.columns
+                )
+                neighborhood_std_matrix.rename(
+                    columns=lambda x: f"{x}_neighbor_std", inplace=True
+                )
+
+            neighborhood_feature_dfs = []
+            if "mean" in aggregations:
+                neighborhood_feature_dfs.append(neighborhood_mean_matrix)
+            if "sum" in aggregations:
+                neighborhood_feature_dfs.append(neighborhood_sum_matrix)
+            if "std" in aggregations:
+                neighborhood_feature_dfs.append(neighborhood_std_matrix)
+
+            neighborhood_features = pd.concat(neighborhood_feature_dfs, axis=1)
+
+        neighborhood_features.index.name = self.nodes.index.name
+        return neighborhood_features
 
     def condense(
         self,
