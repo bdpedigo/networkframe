@@ -10,6 +10,8 @@ import numpy as np
 import pandas as pd
 from beartype import beartype
 from scipy.sparse import csr_array
+from scipy.sparse.csgraph import connected_components, dijkstra, shortest_path
+from scipy.sparse.linalg import eigsh
 from tqdm.autonotebook import tqdm
 
 from .groupby import NodeGroupBy
@@ -663,7 +665,6 @@ class NetworkFrame:
         self, directed: bool = True, connection: ConnectionType = "weak"
     ) -> tuple[int, np.ndarray]:
         """Helper function for connected_components."""
-        from scipy.sparse.csgraph import connected_components
 
         adjacency = self.to_sparse_adjacency()
         n_components, labels = connected_components(
@@ -928,7 +929,6 @@ class NetworkFrame:
             A new NetworkFrame with only the connected component containing the given
             node. If `inplace=True`, returns `None`.
         """
-        from scipy.sparse.csgraph import shortest_path
 
         sparse_adjacency = self.to_sparse_adjacency()
         node_iloc = self.nodes.index.get_loc(node_id)
@@ -1211,8 +1211,6 @@ class NetworkFrame:
         sparse_adjacency = self.to_sparse_adjacency()
         iloc = self.nodes.index.get_loc(node_id)
 
-        from scipy.sparse.csgraph import dijkstra
-
         dists = dijkstra(
             sparse_adjacency, directed=directed, indices=iloc, limit=k, unweighted=True
         )
@@ -1240,8 +1238,6 @@ class NetworkFrame:
 
         sparse_adjacency = self.to_sparse_adjacency()
 
-        from scipy.sparse.csgraph import dijkstra
-
         # TODO add a check for interaction of directed and whether the graph has any
         # bi-directional edges
         dists = dijkstra(sparse_adjacency, directed=directed, limit=k, unweighted=True)
@@ -1259,11 +1255,10 @@ class NetworkFrame:
         k: int,
         aggregations: Union[str, list] = "mean",
         directed: bool = False,
-        drop_self_in_neighborhood=True,
-        drop_non_numeric=True,
-        n_jobs=-1,
-        verbose=False,
-        engine="auto",
+        drop_self_in_neighborhood: bool = True,
+        drop_non_numeric: bool = True,
+        verbose: int = False,
+        engine: Literal["auto", "scipy", "pandas"] = "auto",
     ):
         if k < 0:
             raise ValueError("k must be non-negative.")
@@ -1272,6 +1267,7 @@ class NetworkFrame:
             aggregations = [aggregations]
 
         if engine == "auto":
+            # TODO might also want to do a check on sparsity of the graph here
             if not all([isinstance(x, str) for x in aggregations]) or not all(
                 [x in ["mean", "sum", "std"] for x in aggregations]
             ):
@@ -1284,8 +1280,6 @@ class NetworkFrame:
             nodes = nodes.select_dtypes(include=[np.number])
 
         sparse_adjacency = self.to_sparse_adjacency()
-
-        from scipy.sparse.csgraph import dijkstra
 
         # TODO add a check for interaction of directed and whether the graph has any
         # bi-directional edges
@@ -1455,11 +1449,6 @@ class NetworkFrame:
         adjacency = self.to_sparse_adjacency(weight_col=weight_col)
         adjacency = adjacency + adjacency.T
         adjacency = adjacency.astype(float)
-
-        # from scipy.sparse.linalg import svds
-        # u, s, vh = svds(adjacency, k=1)
-
-        from scipy.sparse.linalg import eigsh
 
         _, u = eigsh(adjacency, k=1, which="LM", return_eigenvectors=True)
 
