@@ -1259,7 +1259,46 @@ class NetworkFrame:
         drop_non_numeric: bool = True,
         verbose: int = False,
         engine: Literal["auto", "scipy", "pandas"] = "auto",
-    ):
+    ) -> pd.DataFrame:
+        """
+        Compute an aggregation over numeric features in the k-hop neighborhood of each
+        node.
+
+        Parameters
+        ----------
+        k
+            The number of hops to consider, must be positive.
+        aggregations
+            The aggregation(s) to compute over the neighborhood. If using
+            `engine='pandas'`, can be any aggregation that can be passed to
+            [pandas.DataFrame.agg][]. If using `engine='scipy'`, currently can only be
+            'mean', 'sum', or 'std'.
+        directed
+            Whether to consider the network as directed for computing the reachable
+            nodes. Note that if `directed=False` but there are bidirectional edges with
+            different weights, the results may not be as expected.
+        drop_self_in_neighborhood
+            Whether to drop the node itself from the neighborhood when aggregating.
+        drop_non_numeric
+            Whether to drop non-numeric columns when aggregating. Aggregating
+            non-numeric columns can lead to errors, depending on the aggregation.
+        verbose
+            Whether to print progress.
+        engine
+            The engine to use for computing the aggregation. If 'auto', will use
+            'pandas' if the aggregations are not all strings or all values accepted by
+            the 'scipy' engine. Otherwise, will use 'scipy'. Note that the SciPy engine
+            is likely to be faster for large graphs when the k-hop neighborhood of each
+            node is much smaller than the total number of nodes.
+
+        Returns
+        -------
+        :
+            A DataFrame with the aggregated features for each node in the k-hop
+            neighborhood. The index will be the same as nodes of the network, and the
+            columns will be the aggregated features (with f'_neighbor_{agg}' appended
+            to each column name).
+        """
         if k < 0:
             raise ValueError("k must be non-negative.")
 
