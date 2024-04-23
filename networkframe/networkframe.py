@@ -1263,13 +1263,21 @@ class NetworkFrame:
         drop_non_numeric=True,
         n_jobs=-1,
         verbose=False,
-        engine="pandas",
+        engine="auto",
     ):
         if k < 0:
             raise ValueError("k must be non-negative.")
 
         if isinstance(aggregations, str):
             aggregations = [aggregations]
+
+        if engine == "auto":
+            if not all([isinstance(x, str) for x in aggregations]) or not all(
+                [x in ["mean", "sum", "std"] for x in aggregations]
+            ):
+                engine = "pandas"
+            else:
+                engine = "scipy"
 
         nodes = self.nodes
         if drop_non_numeric:
