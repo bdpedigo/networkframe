@@ -214,7 +214,7 @@ class NetworkFrame:
         :
             A new NetworkFrame with the reindexed nodes.
         """
-        nodes = self.nodes.reindex(index=index, axis=0)
+        nodes = self.nodes.reindex(index=index)
         edges = self.edges.query("(source in @nodes.index) & (target in @nodes.index)")
         out: NetworkFrame = self._return(nodes=nodes, edges=edges, inplace=False)  # type: ignore
         return out  # type: ignore
@@ -1219,6 +1219,36 @@ class NetworkFrame:
         select_indices
         return self.query_nodes("index in @select_indices", local_dict=locals())
 
+    def k_hop_mask(self, k: int, directed: bool = False, verbose=False):
+        """
+        Return the k-hop neighborhood of a node as a boolean mask.
+
+        Parameters
+        ----------
+        node_id
+            The node ID to use to select the k-hop neighborhood.
+        k
+            The number of hops to consider.
+        directed
+            Whether to consider the network as directed for computing the reachable
+            nodes.
+
+        Returns
+        -------
+        :
+            A boolean mask of the nodes in the k-hop neighborhood of the given node.
+        """
+        if k < 0:
+            raise ValueError("k must be non-negative.")
+
+        sparse_adjacency = self.to_sparse_adjacency()
+
+        # TODO add a check for interaction of directed and whether the graph has any
+        # bi-directional edges
+        dists = dijkstra(sparse_adjacency, directed=directed, limit=k, unweighted=True)
+        mask = ~np.isinf(dists)
+        return mask
+
     def k_hop_decomposition(
         self, k: int, directed: bool = False, verbose=False
     ) -> pd.Series:
@@ -1233,15 +1263,7 @@ class NetworkFrame:
         k
             The number of hops to consider.
         """
-        if k < 0:
-            raise ValueError("k must be non-negative.")
-
-        sparse_adjacency = self.to_sparse_adjacency()
-
-        # TODO add a check for interaction of directed and whether the graph has any
-        # bi-directional edges
-        dists = dijkstra(sparse_adjacency, directed=directed, limit=k, unweighted=True)
-        mask = ~np.isinf(dists)
+        mask = self.k_hop_mask(k, directed=directed, verbose=verbose)
 
         out = {}
         for iloc in tqdm(range(len(self.nodes)), disable=not verbose):
@@ -1299,8 +1321,7 @@ class NetworkFrame:
             columns will be the aggregated features (with f'_neighbor_{agg}' appended
             to each column name).
         """
-        if k < 0:
-            raise ValueError("k must be non-negative.")
+        
 
         if isinstance(aggregations, str):
             aggregations = [aggregations]
@@ -1318,36 +1339,10 @@ class NetworkFrame:
         if drop_non_numeric:
             nodes = nodes.select_dtypes(include=[np.number])
 
-        sparse_adjacency = self.to_sparse_adjacency()
+        mask = self.k_hop_mask(k, directed=directed, verbose=verbose)
 
-        # TODO add a check for interaction of directed and whether the graph has any
-        # bi-directional edges
-        dists = dijkstra(sparse_adjacency, directed=directed, limit=k, unweighted=True)
-        mask = ~np.isinf(dists)
-
-        # def _agg_neighborhood(iloc):
-        #     node = self.nodes.index[iloc]
-        #     select_nodes = self.nodes.loc[mask[iloc]]
-        #     if drop_self_in_neighborhood:
-        #         select_nodes = select_nodes.drop(index=node)
-        #     agg_neighbor_features = select_nodes.agg(aggregations)
-        #     if isinstance(agg_neighbor_features, pd.Series):
-        #         agg_neighbor_features.index = agg_neighbor_features.index.map(
-        #             lambda x: f"{x}_neighbor_{aggregations[0]}"
-        #         )
-        #     elif isinstance(agg_neighbor_features, pd.DataFrame):
-        #         agg_neighbor_features = agg_neighbor_features.unstack()
-        #         agg_neighbor_features.index = agg_neighbor_features.index.map(
-        #             lambda x: f"{x[0]}_neighbor_{x[1]}"
-        #         )
-        #     agg_neighbor_features.name = node
-        #     return agg_neighbor_features
-
-        # with tqdm_joblib(total=len(self.nodes)) as progress_bar:
-        #     rows = Parallel(n_jobs=n_jobs)(
-        #         delayed(_agg_neighborhood)(iloc) for iloc in range(len(self.nodes))
-        #     )
-
+        if verbose > 0:
+            print("Aggregating over neighborhoods")
         if engine == "pandas":
             rows = []
             for iloc in tqdm(range(len(self.nodes)), disable=not verbose):
@@ -1433,7 +1428,9 @@ class NetworkFrame:
 
                 # this is a node by feature matrix of the variances for each feature
                 # in that node's neighborhood
-                variances = (first_term - second_term) / (divisor_matrix - 1)
+                new_divisor_matrix = divisor_matrix - 1
+                new_divisor_matrix[new_divisor_matrix == 0] = 1
+                variances = (first_term - second_term) / new_divisor_matrix
                 variances[variances < 0] = 0
 
                 neighborhood_std_matrix = np.sqrt(variances)
