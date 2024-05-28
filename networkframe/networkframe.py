@@ -75,12 +75,14 @@ class NetworkFrame:
             referenced_node_ids = np.union1d(
                 edges["source"].unique(), edges["target"].unique()
             )
+            # TODO fix this very very slow check
             if not np.all(np.isin(referenced_node_ids, nodes.index)):
                 raise ValueError(
                     "All nodes referenced in `edges` must be in `nodes` index."
                 )
 
-        # should probably assume things like "source" and "target" columns
+        # should probably assume things li
+        # ke "source" and "target" columns
         # and that these elements are in the nodes dataframe
         # TODO are multigraphs allowed?
         # TODO assert that sources and targets and node index are all unique?
@@ -589,7 +591,11 @@ class NetworkFrame:
         return g
 
     def to_sparse_adjacency(
-        self, weight_col: Optional[str] = None, aggfunc="sum", verify_integrity=True
+        self,
+        weight_col: Optional[str] = None,
+        aggfunc="sum",
+        verify_integrity=True,
+        format="csr",
     ) -> csr_array:
         """
         Return the [adjacency matrix](https://en.wikipedia.org/wiki/Adjacency_matrix)
@@ -659,7 +665,15 @@ class NetworkFrame:
             (data, (source_indices.codes, target_indices.codes)),
             shape=(len(self.sources), len(self.targets)),
         )
+
+        if format == "lil":
+            from scipy.sparse import lil_array
+
+            adj = lil_array(adj)
         return adj
+    
+    def to_torch_geometric(self):
+        pass
 
     def _get_component_indices(
         self, directed: bool = True, connection: ConnectionType = "weak"
@@ -1321,7 +1335,6 @@ class NetworkFrame:
             columns will be the aggregated features (with f'_neighbor_{agg}' appended
             to each column name).
         """
-        
 
         if isinstance(aggregations, str):
             aggregations = [aggregations]
