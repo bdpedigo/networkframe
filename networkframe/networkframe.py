@@ -1,6 +1,5 @@
 """Classes for representing networks and metadata."""
 
-
 import copy
 from collections.abc import Iterator
 from typing import Any, Callable, Literal, Optional, Self, Union
@@ -660,6 +659,50 @@ class NetworkFrame:
             shape=(len(self.sources), len(self.targets)),
         )
         return adj
+
+    def to_torch_geometric(self, directed=True, weight_col=None):
+        import torch
+        from torch_geometric.data import Data
+
+        nodes = self.nodes
+        edges = self.edges
+        if isinstance(edges, list):
+            edges = np.array(edges)
+
+        edgelist = edges[["source", "target"]].values
+        remapped_sources = nodes.index.get_indexer_for(edgelist[:, 0])
+        remapped_targets = nodes.index.get_indexer_for(edgelist[:, 1])
+        remapped_edges = np.stack([remapped_sources, remapped_targets], axis=1)
+        remapped_nodes = nodes.reset_index(drop=True).fillna(0.0)
+
+        if directed:
+            edge_index = torch.tensor(remapped_edges.T, dtype=torch.long)
+        else:
+            edge_index = torch.tensor(
+                np.concatenate([remapped_edges.T, remapped_edges[:, ::-1].T], axis=1),
+                dtype=torch.long,
+            )
+
+        if weight_col is not None:
+            if directed:
+                edge_attr = torch.tensor(
+                    edges[weight_col].values, dtype=torch.float
+                ).unsqueeze(1)
+            else:
+                edge_attr = torch.tensor(
+                    np.concatenate(
+                        [edges[weight_col].values, edges[weight_col].values]
+                    ),
+                    dtype=torch.float,
+                ).unsqueeze(1)
+        else:
+            edge_attr = None
+
+        x = torch.tensor(remapped_nodes.values, dtype=torch.float)
+
+        data = Data(x=x, edge_index=edge_index, edge_attr=edge_attr)
+        
+        return data
 
     def _get_component_indices(
         self, directed: bool = True, connection: ConnectionType = "weak"
@@ -1321,7 +1364,6 @@ class NetworkFrame:
             columns will be the aggregated features (with f'_neighbor_{agg}' appended
             to each column name).
         """
-        
 
         if isinstance(aggregations, str):
             aggregations = [aggregations]
